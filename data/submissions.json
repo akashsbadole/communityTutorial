@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1748197925816,
+    "studentName": "Test Student",
+    "studentEmail": "test@example.com",
+    "courseSlug": "wordpress",
+    "courseName": "WordPress Course",
+    "message": "Test enrollment",
+    "status": "pending",
+    "submittedAt": "2025-05-25T18:32:06.559Z"
+  },
+  {
+    "id": 1748197982118,
+    "studentName": "Test Student",
+    "studentEmail": "test@example.com",
+    "courseSlug": "wordpress",
+    "courseName": "WordPress Course",
+    "message": "Duplicate test",
+    "status": "pending",
+    "submittedAt": "2025-05-25T18:33:02.949Z"
+  },
+  {
+    "id": 1748198043344,
+    "studentName": "Test Student 2",
+    "studentEmail": "test@example.com",
+    "courseSlug": "wordpress",
+    "courseName": "WordPress Course",
+    "message": "Duplicate test",
+    "status": "pending",
+    "submittedAt": "2025-05-25T18:34:03.922Z"
+  },
+  {
+    "id": 1748198230136,
+    "studentName": "Test Student 3",
+    "studentEmail": "test@example.com",
+    "courseSlug": "wordpress",
+    "courseName": "WordPress Course",
+    "message": "Another duplicate test",
+    "status": "pending",
+    "submittedAt": "2025-05-25T18:37:10.949Z"
+  },
+  {
+    "id": 1748198294086,
+    "studentName": "Debug Test",
+    "studentEmail": "debug@example.com",
+    "courseSlug": "wordpress",
+    "courseName": "WordPress Course",
+    "message": "Debug test",
+    "status": "pending",
+    "submittedAt": "2025-05-25T18:38:14.687Z"
+  },
+  {
+    "id": 1748198369427,
+    "studentName": "asdasd",
+    "studentEmail": "akashsbadole@gmail.com",
+    "courseSlug": "wordpress",
+    "courseName": "WordPress Course",
+    "message": "jhjj",
+    "status": "pending",
+    "submittedAt": "2025-05-25T18:39:30.312Z"
+  },
+  {
+    "id": 1,
+    "studentName": "Test User",
+    "studentEmail": "test@example.com",
+    "courseSlug": "wordpress",
+    "courseName": "WordPress Course",
+    "message": "Testing the new JSON system",
+    "status": "pending",
+    "submittedAt": "2025-05-25T19:00:41.730Z"
+  }
+]

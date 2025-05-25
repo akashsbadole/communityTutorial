@@ -1,0 +1,289 @@
+{
+  "courses": [
+    {
+      "id": 1,
+      "name": "WordPress Course",
+      "slug": "wordpress",
+      "description": "Master WordPress development from basics to advanced themes and plugins. Learn to build professional websites, custom themes, and powerful plugins.",
+      "price": "$299",
+      "duration": "8 weeks",
+      "level": "Beginner to Advanced",
+      "tutorEmail": "wp-tutor@trainingsite.com",
+      "image": "/images/wordpress-course.jpg",
+      "features": [
+        "Complete WordPress fundamentals",
+        "Custom theme development",
+        "Plugin development",
+        "WordPress security",
+        "Performance optimization",
+        "E-commerce with WooCommerce"
+      ],
+      "syllabus": {
+        "modules": [
+          {
+            "title": "Introduction to WordPress and Setup",
+            "duration": "Week 1",
+            "subtopics": [
+              "What is WordPress and its history",
+              "WordPress.com vs WordPress.org differences",
+              "Setting up local development environment",
+              "Installing WordPress locally (XAMPP/MAMP/Local)",
+              "WordPress file structure overview",
+              "Understanding the WordPress dashboard",
+              "User roles and permissions",
+              "WordPress settings and configuration"
+            ]
+          },
+          {
+            "title": "WordPress Themes and Customization",
+            "duration": "Week 2-3",
+            "subtopics": [
+              "Understanding WordPress themes",
+              "Installing and activating themes",
+              "Theme customizer and live preview",
+              "Child themes creation and importance",
+              "Custom CSS and theme modifications",
+              "Theme hierarchy and template files",
+              "Creating custom page templates",
+              "Working with WordPress hooks and filters"
+            ]
+          },
+          {
+            "title": "Content Management and Custom Fields",
+            "duration": "Week 4",
+            "subtopics": [
+              "Posts vs Pages understanding",
+              "Categories and tags management",
+              "Custom post types creation",
+              "Advanced Custom Fields (ACF)",
+              "Custom taxonomies",
+              "Media library management",
+              "WordPress editor (Gutenberg)",
+              "Custom blocks development"
+            ]
+          },
+          {
+            "title": "Plugin Development Fundamentals",
+            "duration": "Week 5-6",
+            "subtopics": [
+              "What are WordPress plugins",
+              "Plugin architecture and structure",
+              "Creating your first plugin",
+              "WordPress hooks: actions and filters",
+              "Database operations in WordPress",
+              "Plugin security best practices",
+              "Creating admin pages and settings",
+              "Plugin deployment and distribution"
+            ]
+          },
+          {
+            "title": "Advanced WordPress Development",
+            "duration": "Week 7",
+            "subtopics": [
+              "WordPress REST API",
+              "Custom endpoints creation",
+              "AJAX in WordPress",
+              "WordPress multisite setup",
+              "Performance optimization techniques",
+              "Caching strategies",
+              "WordPress security hardening",
+              "Debugging and troubleshooting"
+            ]
+          },
+          {
+            "title": "E-commerce and Final Project",
+            "duration": "Week 8",
+            "subtopics": [
+              "WooCommerce setup and configuration",
+              "Custom WooCommerce development",
+              "Payment gateway integration",
+              "Building a complete WordPress site",
+              "Deployment strategies",
+              "Maintenance and updates",
+              "Client handover process",
+              "Portfolio development"
+            ]
+          }
+        ]
+      },
+      "createdAt": "2024-01-15T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Shopify Course",
+      "slug": "shopify",
+      "description": "Build and customize Shopify stores with Liquid templates, apps, and advanced e-commerce features. Perfect for entrepreneurs and developers.",
+      "price": "$249",
+      "duration": "6 weeks",
+      "level": "Intermediate",
+      "tutorEmail": "shopify-tutor@trainingsite.com",
+      "image": "/images/shopify-course.jpg",
+      "features": [
+        "Shopify store setup",
+        "Liquid template development",
+        "Custom app development",
+        "Payment integration",
+        "Store optimization",
+        "Marketing automation"
+      ],
+      "syllabus": {
+        "modules": [
+          {
+            "title": "Shopify Platform Overview",
+            "duration": "Week 1",
+            "subtopics": [
+              "Introduction to Shopify ecosystem",
+              "Shopify vs other e-commerce platforms",
+              "Setting up your Shopify store",
+              "Understanding Shopify admin panel",
+              "Store settings and configuration",
+              "Product management basics"
+            ]
+          },
+          {
+            "title": "Liquid Template Language",
+            "duration": "Week 2-3",
+            "subtopics": [
+              "Introduction to Liquid syntax",
+              "Variables and objects in Liquid",
+              "Liquid filters and their usage",
+              "Control flow and loops",
+              "Template structure and hierarchy",
+              "Creating custom templates"
+            ]
+          },
+          {
+            "title": "Theme Development",
+            "duration": "Week 4",
+            "subtopics": [
+              "Shopify theme structure",
+              "Customizing existing themes",
+              "Building themes from scratch",
+              "Responsive design for e-commerce",
+              "Theme deployment and testing"
+            ]
+          },
+          {
+            "title": "Advanced Features and Apps",
+            "duration": "Week 5",
+            "subtopics": [
+              "Shopify app development",
+              "API integration",
+              "Custom functionality development",
+              "Third-party app integration",
+              "Store optimization techniques"
+            ]
+          },
+          {
+            "title": "Launch and Marketing",
+            "duration": "Week 6",
+            "subtopics": [
+              "Store launch checklist",
+              "SEO optimization",
+              "Marketing automation setup",
+              "Analytics and tracking",
+              "Ongoing maintenance"
+            ]
+          }
+        ]
+      },
+      "createdAt": "2024-01-15T00:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Web Development Course",
+      "slug": "webdev",
+      "description": "Complete web development bootcamp covering HTML, CSS, JavaScript, and modern frameworks. Build real-world projects and launch your career.",
+      "price": "$399",
+      "duration": "12 weeks",
+      "level": "Beginner to Advanced",
+      "tutorEmail": "webdev-tutor@trainingsite.com",
+      "image": "/images/webdev-course.jpg",
+      "features": [
+        "HTML5 & CSS3 mastery",
+        "JavaScript fundamentals",
+        "React.js development",
+        "Node.js backend",
+        "Database integration",
+        "Full-stack projects"
+      ],
+      "syllabus": {
+        "modules": [
+          {
+            "title": "HTML5 and Semantic Markup",
+            "duration": "Week 1-2",
+            "subtopics": [
+              "HTML document structure and syntax",
+              "Semantic HTML elements",
+              "Forms and input types",
+              "HTML5 APIs and features",
+              "Accessibility best practices",
+              "SEO-friendly markup"
+            ]
+          },
+          {
+            "title": "CSS3 and Responsive Design",
+            "duration": "Week 3-4",
+            "subtopics": [
+              "CSS syntax and selectors",
+              "Box model and layout",
+              "Flexbox and CSS Grid",
+              "Responsive design principles",
+              "CSS animations and transitions",
+              "Modern CSS frameworks"
+            ]
+          },
+          {
+            "title": "JavaScript Fundamentals",
+            "duration": "Week 5-6",
+            "subtopics": [
+              "JavaScript syntax and basics",
+              "DOM manipulation",
+              "Event handling",
+              "Asynchronous JavaScript",
+              "ES6+ features",
+              "JavaScript best practices"
+            ]
+          },
+          {
+            "title": "React.js Development",
+            "duration": "Week 7-8",
+            "subtopics": [
+              "React components and JSX",
+              "State management",
+              "Props and component communication",
+              "React hooks",
+              "Routing with React Router",
+              "Building React applications"
+            ]
+          },
+          {
+            "title": "Backend Development with Node.js",
+            "duration": "Week 9-10",
+            "subtopics": [
+              "Node.js fundamentals",
+              "Express.js framework",
+              "RESTful API development",
+              "Database integration",
+              "Authentication and security",
+              "Deployment strategies"
+            ]
+          },
+          {
+            "title": "Full-Stack Projects",
+            "duration": "Week 11-12",
+            "subtopics": [
+              "Planning full-stack applications",
+              "Building complete web applications",
+              "Testing and debugging",
+              "Performance optimization",
+              "Deployment and hosting",
+              "Portfolio development"
+            ]
+          }
+        ]
+      },
+      "createdAt": "2024-01-15T00:00:00.000Z"
+    }
+  ]
+}

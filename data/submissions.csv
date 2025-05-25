@@ -1,0 +1,8 @@
+ID,Name,Email,Course Slug,Course Name,Message,Status,Submitted At
+"1748197925816","Test Student","test@example.com","wordpress","WordPress Course","Test enrollment","pending","2025-05-25T18:32:06.559Z"
+"1748197982118","Test Student","test@example.com","wordpress","WordPress Course","Duplicate test","pending","2025-05-25T18:33:02.949Z"
+"1748198043344","Test Student 2","test@example.com","wordpress","WordPress Course","Duplicate test","pending","2025-05-25T18:34:03.922Z"
+"1748198230136","Test Student 3","test@example.com","wordpress","WordPress Course","Another duplicate test","pending","2025-05-25T18:37:10.949Z"
+"1748198294086","Debug Test","debug@example.com","wordpress","WordPress Course","Debug test","pending","2025-05-25T18:38:14.687Z"
+"1748198369427","asdasd","akashsbadole@gmail.com","wordpress","WordPress Course","jhjj","pending","2025-05-25T18:39:30.312Z"
+"1","Test User","test@example.com","wordpress","WordPress Course","Testing the new JSON system","pending","2025-05-25T19:00:41.730Z"
