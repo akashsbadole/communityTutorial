@@ -1,0 +1,76 @@
+"use client"
+
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { 
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useUser
+} from "@clerk/nextjs"
+
+export function AuthHeader() {
+  const { isLoaded } = useUser()
+
+  return (
+    <header className="bg-white shadow-sm border-b">
+      <div className="container mx-auto px-4 py-4">
+        <nav className="flex items-center justify-between">
+          <Link href="/" className="text-2xl font-bold text-blue-600">
+            TrainingHub
+          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/" className="text-gray-600 hover:text-gray-900">
+              Courses
+            </Link>
+            <Link
+              href="/subjects"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              Subjects
+            </Link>
+            {isLoaded && (
+              <SignedIn>
+                <Link
+                  href="/dashboard"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Dashboard
+                </Link>
+              </SignedIn>
+            )}
+            <Link
+              href="/contact"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              Contact
+            </Link>
+            {isLoaded && (
+              <>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <Button variant="outline" size="sm">
+                      Sign In
+                    </Button>
+                  </SignInButton>
+                  <Button asChild size="sm">
+                    <Link href="/sign-up">Get Started</Link>
+                  </Button>
+                </SignedOut>
+                <SignedIn>
+                  <UserButton afterSignOutUrl="/" />
+                </SignedIn>
+              </>
+            )}
+            {!isLoaded && (
+              <Button variant="outline" size="sm" disabled>
+                Loading...
+              </Button>
+            )}
+          </div>
+        </nav>
+      </div>
+    </header>
+  )
+}

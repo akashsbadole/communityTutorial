@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1748202225322,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "subject": "Test Contact",
+    "category": "general",
+    "message": "This is a test message from the contact form.",
+    "status": "new",
+    "submittedAt": "2025-05-25T19:43:45.322Z"
+  },
+  {
+    "id": 1748202793507,
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "subject": "Database Test",
+    "category": "technical",
+    "message": "Testing the database integration for contact form.",
+    "status": "new",
+    "submittedAt": "2025-05-25T19:53:13.507Z"
+  },
+  {
+    "id": 1748204549063,
+    "name": "Test User",
+    "email": "john@example.com",
+    "subject": "Duplicate Test",
+    "category": "general",
+    "message": "Testing duplicate email check.",
+    "status": "new",
+    "submittedAt": "2025-05-25T20:22:29.063Z"
+  },
+  {
+    "id": 1748204583522,
+    "name": "Another Test",
+    "email": "john@example.com",
+    "subject": "Another Duplicate",
+    "category": "general",
+    "message": "Testing duplicate again.",
+    "status": "new",
+    "submittedAt": "2025-05-25T20:23:03.522Z"
+  },
+  {
+    "id": 1,
+    "name": "Final Test",
+    "email": "john@example.com",
+    "subject": "Final Duplicate Test",
+    "category": "general",
+    "message": "This should be rejected as duplicate.",
+    "status": "new",
+    "submittedAt": "2025-05-25T20:23:53.545Z"
+  },
+  {
+    "id": 2,
+    "name": "New User",
+    "email": "newuser@example.com",
+    "subject": "New Contact",
+    "category": "general",
+    "message": "This should work with a new email.",
+    "status": "new",
+    "submittedAt": "2025-05-25T20:30:09.083Z"
+  },
+  {
+    "id": 3,
+    "name": "Test User",
+    "email": "testuser2@example.com",
+    "subject": "Testing after Clerk fix",
+    "category": "general",
+    "message": "Testing new email after fixing Clerk.",
+    "status": "new",
+    "submittedAt": "2025-05-25T20:39:58.546Z"
+  }
+]
