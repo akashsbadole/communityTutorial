@@ -87,9 +87,23 @@ export default function CourseBookingPage() {
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
+  const [isBooked, setIsBooked] = useState(false);
 
   const courseId = params.courseId as string;
   const tutorId = params.tutorId as string;
+
+  // Function to mask contact information
+  const maskContactInfo = (info: string, type: "email" | "phone") => {
+    if (type === "email") {
+      const [username, domain] = info.split("@");
+      return `${username.substring(0, 2)}***@${domain}`;
+    } else {
+      return `${info.substring(0, 3)}****${info.substring(info.length - 2)}`;
+    }
+  };
+
+  // Check if contact info should be visible
+  const shouldShowContactInfo = isBooked && agreePrivacy;
 
   const courseData = mockCourseData[courseId as keyof typeof mockCourseData];
   const tutorData =
@@ -162,13 +176,23 @@ export default function CourseBookingPage() {
       const result = await response.json();
 
       if (!response.ok) {
+        if (response.status === 401) {
+          toast.error("Please sign in to book a course");
+          router.push("/sign-in");
+          return;
+        }
         throw new Error(result.error || "Failed to book course");
       }
 
       toast.success("Course booked successfully! Demo class scheduled.");
 
-      // Redirect to student dashboard
-      router.push("/student/dashboard");
+      // Set booked state to show contact information
+      setIsBooked(true);
+
+      // Redirect to student dashboard after a delay to show contact info
+      setTimeout(() => {
+        router.push("/student/dashboard");
+      }, 3000);
     } catch (error) {
       console.error("Booking error:", error);
       toast.error(
@@ -313,34 +337,76 @@ export default function CourseBookingPage() {
                     <h4 className="font-semibold text-gray-900 mb-3">
                       Contact Information
                     </h4>
-                    <div className="flex flex-wrap gap-4 text-sm">
-                      <a
-                        href={`mailto:${tutorData.email}`}
-                        className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
-                      >
-                        <Mail className="h-4 w-4" />
-                        Email
-                      </a>
-                      <a
-                        href={`tel:${tutorData.phone}`}
-                        className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
-                      >
-                        <Phone className="h-4 w-4" />
-                        Call
-                      </a>
-                      <a
-                        href={`https://wa.me/${tutorData.whatsapp.replace(
-                          /[^0-9]/g,
-                          ""
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-green-600 hover:text-green-800"
-                      >
-                        <MessageCircle className="h-4 w-4" />
-                        WhatsApp
-                      </a>
-                    </div>
+
+                    {shouldShowContactInfo ? (
+                      // Show actual contact information after booking and privacy consent
+                      <div className="space-y-3">
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                          <p className="text-sm text-green-700 font-medium">
+                            ✅ Contact information is now available! You can
+                            reach your tutor directly.
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-4 text-sm">
+                          <a
+                            href={`mailto:${tutorData.email}`}
+                            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-lg"
+                          >
+                            <Mail className="h-4 w-4" />
+                            <span>{tutorData.email}</span>
+                          </a>
+                          <a
+                            href={`tel:${tutorData.phone}`}
+                            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-lg"
+                          >
+                            <Phone className="h-4 w-4" />
+                            <span>{tutorData.phone}</span>
+                          </a>
+                          <a
+                            href={`https://wa.me/${tutorData.whatsapp.replace(
+                              /[^0-9]/g,
+                              ""
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-green-600 hover:text-green-800 bg-green-50 px-3 py-2 rounded-lg"
+                          >
+                            <MessageCircle className="h-4 w-4" />
+                            <span>{tutorData.whatsapp}</span>
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      // Show masked contact information before booking
+                      <div className="space-y-3">
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                          <p className="text-sm text-yellow-700">
+                            🔒 Contact information will be available after
+                            booking and agreeing to privacy policy.
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-4 text-sm">
+                          <div className="flex items-center gap-2 text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
+                            <Mail className="h-4 w-4" />
+                            <span>
+                              {maskContactInfo(tutorData.email, "email")}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
+                            <Phone className="h-4 w-4" />
+                            <span>
+                              {maskContactInfo(tutorData.phone, "phone")}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
+                            <MessageCircle className="h-4 w-4" />
+                            <span>
+                              {maskContactInfo(tutorData.whatsapp, "phone")}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -530,22 +596,47 @@ export default function CourseBookingPage() {
                 </CardContent>
               </Card>
 
+              {/* Success Message */}
+              {isBooked && (
+                <Card className="bg-green-50 border-green-200">
+                  <CardContent className="pt-6">
+                    <div className="text-center space-y-3">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                      </div>
+                      <h3 className="font-semibold text-green-800">
+                        Course Booked Successfully!
+                      </h3>
+                      <p className="text-sm text-green-700">
+                        Your demo class has been scheduled. Contact information
+                        is now available above.
+                      </p>
+                      <p className="text-xs text-green-600">
+                        Redirecting to dashboard in a few seconds...
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Book Course Button */}
-              <Button
-                className="w-full py-3 text-lg"
-                onClick={handleBooking}
-                disabled={
-                  isBooking ||
-                  !selectedLanguage ||
-                  !selectedTimeSlot ||
-                  !agreePrivacy ||
-                  !agreeTerms
-                }
-              >
-                {isBooking
-                  ? "Booking Course..."
-                  : "Book Course & Schedule Demo"}
-              </Button>
+              {!isBooked && (
+                <Button
+                  className="w-full py-3 text-lg"
+                  onClick={handleBooking}
+                  disabled={
+                    isBooking ||
+                    !selectedLanguage ||
+                    !selectedTimeSlot ||
+                    !agreePrivacy ||
+                    !agreeTerms
+                  }
+                >
+                  {isBooking
+                    ? "Booking Course..."
+                    : "Book Course & Schedule Demo"}
+                </Button>
+              )}
 
               <p className="text-xs text-gray-500 text-center">
                 A demo class will be scheduled after booking. Full payment is

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import {
   getUserNotifications,
   markNotificationAsRead,
@@ -8,13 +8,13 @@ import {
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId: clerkUserId } = auth();
+    const currentUserData = await currentUser();
 
-    if (!clerkUserId) {
+    if (!currentUserData || !currentUserData.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await getUserByClerkId(clerkUserId);
+    const user = await getUserByClerkId(currentUserData.id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -40,13 +40,13 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const { userId: clerkUserId } = auth();
+    const currentUserData = await currentUser();
 
-    if (!clerkUserId) {
+    if (!currentUserData || !currentUserData.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await getUserByClerkId(clerkUserId);
+    const user = await getUserByClerkId(currentUserData.id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

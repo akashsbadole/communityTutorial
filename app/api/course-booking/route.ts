@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import {
   createCourseBooking,
   createDemoClass,
@@ -12,16 +12,21 @@ export async function POST(request: NextRequest) {
   try {
     console.log("[API] Course booking request received");
 
-    const { userId: clerkUserId } = auth();
-    console.log("[API] Clerk user ID:", clerkUserId);
+    // Get current user - this is the most reliable method
+    const user = await currentUser();
 
-    if (!clerkUserId) {
-      console.log("[API] No user ID found, unauthorized");
+    console.log("[API] CurrentUser:", user?.id);
+    console.log("[API] User email:", user?.emailAddresses[0]?.emailAddress);
+
+    if (!user || !user.id) {
+      console.log("[API] No authenticated user found");
       return NextResponse.json(
         { error: "Unauthorized - Please sign in" },
         { status: 401 }
       );
     }
+
+    console.log("[API] Using user ID:", user.id);
 
     const body = await request.json();
     console.log("[API] Request body:", JSON.stringify(body, null, 2));
@@ -38,9 +43,22 @@ export async function POST(request: NextRequest) {
       userInfo,
     } = body;
 
+    // Map string course IDs to integer IDs
+    const courseIdMap: { [key: string]: number } = {
+      "wordpress-dev": 1,
+      "react-basics": 2,
+      "python-fundamentals": 3,
+      "digital-marketing": 4,
+      "ui-ux-design": 5,
+      "data-science": 6,
+    };
+
+    const numericCourseId = courseIdMap[courseId] || 1; // Default to 1 if not found
+
     console.log("[API] Extracted data:", {
       tutorId,
       courseId,
+      numericCourseId,
       selectedLanguage,
       selectedTimeSlot,
       totalAmount,
@@ -72,30 +90,36 @@ export async function POST(request: NextRequest) {
     }
 
     // Get or create user in our database
-    console.log("[API] Looking up user by Clerk ID:", clerkUserId);
-    let user = await getUserByClerkId(clerkUserId);
-    console.log("[API] Found user:", user ? "Yes" : "No");
+    console.log("[API] Looking up user by Clerk ID:", user.id);
+    let dbUser = await getUserByClerkId(user.id);
+    console.log("[API] Found user:", dbUser ? "Yes" : "No");
 
-    if (!user && userInfo) {
-      console.log("[API] Creating new user with info:", userInfo);
-      // Create user if doesn't exist
+    // If user doesn't exist in our database, create them
+    if (!dbUser) {
+      console.log("[API] Creating user from Clerk data");
       const userId = await createUser({
-        clerkId: clerkUserId,
-        email: userInfo.email,
-        fullName: userInfo.fullName,
-        phone: userInfo.phone,
-        whatsapp: userInfo.whatsapp,
+        clerkId: user.id,
+        email: user.emailAddresses[0]?.emailAddress || "",
+        fullName: user.fullName || "",
+        phone: user.phoneNumbers[0]?.phoneNumber || "",
+        whatsapp: user.phoneNumbers[0]?.phoneNumber || "",
         role: "student",
       });
 
       console.log("[API] Created user with ID:", userId);
 
       if (userId) {
-        user = { id: userId, ...userInfo };
+        dbUser = {
+          id: userId,
+          email: user.emailAddresses[0]?.emailAddress || "",
+          fullName: user.fullName || "",
+          phone: user.phoneNumbers[0]?.phoneNumber || "",
+          whatsapp: user.phoneNumbers[0]?.phoneNumber || "",
+        };
       }
     }
 
-    if (!user) {
+    if (!dbUser) {
       console.log("[API] No user found or created");
       return NextResponse.json(
         { error: "Failed to create or find user" },
@@ -106,9 +130,9 @@ export async function POST(request: NextRequest) {
     // Create course booking
     console.log("[API] Creating course booking...");
     const bookingId = await createCourseBooking({
-      studentId: user.id,
+      studentId: dbUser.id,
       tutorId,
-      courseId: parseInt(courseId),
+      courseId: numericCourseId,
       selectedLanguage,
       selectedTimeSlot,
       totalAmount: parseFloat(totalAmount),
@@ -138,9 +162,9 @@ export async function POST(request: NextRequest) {
 
     const demoId = await createDemoClass({
       bookingId,
-      studentId: user.id,
+      studentId: dbUser.id,
       tutorId,
-      courseId: parseInt(courseId),
+      courseId: numericCourseId,
       scheduledDate: demoDate,
       meetingLink: `https://zoom.us/j/${Math.random()
         .toString()
@@ -151,7 +175,7 @@ export async function POST(request: NextRequest) {
     if (demoId) {
       // Student notification
       await createNotification({
-        userId: user.id,
+        userId: dbUser.id,
         type: "demo_scheduled",
         title: "Demo Class Scheduled",
         message: `Your demo class has been scheduled for ${demoDate.toLocaleDateString()} at ${time}`,
@@ -166,7 +190,9 @@ export async function POST(request: NextRequest) {
         userId: tutorId,
         type: "new_student",
         title: "New Student Enrolled",
-        message: `${user.fullName || user.email} has enrolled in your course`,
+        message: `${
+          dbUser.fullName || dbUser.email
+        } has enrolled in your course`,
         actionUrl: `/tutor/students/${bookingId}`,
         priority: "high",
         relatedBookingId: bookingId,
@@ -183,6 +209,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Course booking error:", error);
+    console.error(
+      "Error stack:",
+      error instanceof Error ? error.stack : "No stack trace"
+    );
 
     // If it's a database error, provide a more helpful message
     if (error instanceof Error && error.message.includes("Database")) {
@@ -199,6 +229,12 @@ export async function POST(request: NextRequest) {
       {
         error: "Internal server error",
         details: error instanceof Error ? error.message : String(error),
+        stack:
+          process.env.NODE_ENV === "development"
+            ? error instanceof Error
+              ? error.stack
+              : "No stack"
+            : undefined,
       },
       { status: 500 }
     );
@@ -207,13 +243,13 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId: clerkUserId } = auth();
+    const currentUserData = await currentUser();
 
-    if (!clerkUserId) {
+    if (!currentUserData || !currentUserData.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await getUserByClerkId(clerkUserId);
+    const user = await getUserByClerkId(currentUserData.id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
