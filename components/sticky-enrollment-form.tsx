@@ -143,7 +143,7 @@ export function StickyEnrollmentForm({ courses }: StickyEnrollmentFormProps) {
             <div className="space-y-2">
               <Label htmlFor="sticky-course">Select Course *</Label>
               <Select
-                value={formData.courseSlug}
+                value={formData.courseSlug || undefined}
                 onValueChange={(value) =>
                   setFormData({ ...formData, courseSlug: value })
                 }

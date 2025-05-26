@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { 
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
   SignInButton,
   SignedIn,
   SignedOut,
   UserButton,
-  useUser
-} from "@clerk/nextjs"
+  useUser,
+} from "@clerk/nextjs";
 
 export function AuthHeader() {
-  const { isLoaded } = useUser()
+  const { isLoaded } = useUser();
 
   return (
     <header className="bg-white shadow-sm border-b">
@@ -22,7 +22,10 @@ export function AuthHeader() {
           </Link>
           <div className="flex items-center gap-6">
             <Link href="/" className="text-gray-600 hover:text-gray-900">
-              Courses
+              Home
+            </Link>
+            <Link href="/search" className="text-gray-600 hover:text-gray-900">
+              Search Courses
             </Link>
             <Link
               href="/subjects"
@@ -40,10 +43,7 @@ export function AuthHeader() {
                 </Link>
               </SignedIn>
             )}
-            <Link
-              href="/contact"
-              className="text-gray-600 hover:text-gray-900"
-            >
+            <Link href="/contact" className="text-gray-600 hover:text-gray-900">
               Contact
             </Link>
             {isLoaded && (
@@ -72,5 +72,5 @@ export function AuthHeader() {
         </nav>
       </div>
     </header>
-  )
+  );
 }

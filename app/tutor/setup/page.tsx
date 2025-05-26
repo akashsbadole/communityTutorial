@@ -268,8 +268,14 @@ export default function TutorSetupPage() {
                           handleInputChange("email", e.target.value)
                         }
                         placeholder="Enter your email"
+                        disabled
+                        className="bg-gray-100 cursor-not-allowed"
                         required
                       />
+                      <p className="text-xs text-gray-500">
+                        Email is automatically set from your account and cannot
+                        be changed here.
+                      </p>
                     </div>
 
                     <div className="space-y-2">
@@ -371,7 +377,7 @@ export default function TutorSetupPage() {
                       <div className="space-y-2">
                         <Label htmlFor="category">Category *</Label>
                         <Select
-                          value={tutorProfile.category}
+                          value={tutorProfile.category || undefined}
                           onValueChange={(value) =>
                             handleInputChange("category", value)
                           }
