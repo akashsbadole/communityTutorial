@@ -884,3 +884,50 @@ export async function createTutorProfile(tutorData: {
     throw error;
   }
 }
+
+// Get course bookings by student ID
+export async function getCourseBookingsByStudentId(studentId: string) {
+  try {
+    if (!db) {
+      console.warn("[DB] Database not connected, cannot get course bookings");
+      return [];
+    }
+
+    const result = await db
+      .select()
+      .from(courseBookings)
+      .where(eq(courseBookings.studentId, studentId))
+      .orderBy(courseBookings.createdAt);
+
+    return result;
+  } catch (error) {
+    console.error("Error getting course bookings by student ID:", error);
+    return [];
+  }
+}
+
+// Update user role
+export async function updateUserRole(
+  userId: string,
+  newRole: "student" | "tutor" | "admin"
+) {
+  try {
+    if (!db) {
+      console.warn("[DB] Database not connected, cannot update user role");
+      return false;
+    }
+
+    await db
+      .update(users)
+      .set({
+        role: newRole,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId));
+
+    return true;
+  } catch (error) {
+    console.error("Error updating user role:", error);
+    return false;
+  }
+}

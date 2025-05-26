@@ -8,18 +8,32 @@ import {
   real,
 } from "drizzle-orm/pg-core";
 
-// Courses table
+// Courses table (enhanced)
 export const courses = pgTable("courses", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
-  syllabus: text("syllabus").notNull(),
-  tutorEmail: text("tutor_email").notNull(),
-  price: text("price"),
+  name: text("name"),
+  slug: text("slug").unique(),
+  title: text("title").notNull(),
   description: text("description"),
+  price: real("price").notNull(),
+  currency: text("currency").default("USD"),
+  durationWeeks: integer("duration_weeks"),
+  totalSessions: integer("total_sessions"),
+  sessionDurationMinutes: integer("session_duration_minutes").default(60),
+  category: text("category"),
+  difficultyLevel: text("difficulty_level"),
+  prerequisites: text("prerequisites"),
+  learningOutcomes: text("learning_outcomes"),
+  syllabus: text("syllabus"), // JSON string
+  tutorEmail: text("tutor_email"),
   duration: text("duration"),
   level: text("level"),
+  isActive: boolean("is_active").default(true),
+  createdBy: text("created_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Enrollments table
@@ -217,4 +231,162 @@ export const privacyConsents = pgTable("privacy_consents", {
   ),
   withdrawnAt: timestamp("withdrawn_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Course tutors junction table
+export const courseTutors = pgTable("course_tutors", {
+  id: text("id").primaryKey(),
+  courseId: integer("course_id")
+    .notNull()
+    .references(() => courses.id, { onDelete: "cascade" }),
+  tutorId: text("tutor_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  isPrimary: boolean("is_primary").default(false),
+  hourlyRate: real("hourly_rate"),
+  availability: text("availability"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Payments table
+export const payments = pgTable("payments", {
+  id: text("id").primaryKey(),
+  bookingId: text("booking_id")
+    .notNull()
+    .references(() => courseBookings.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  amount: real("amount").notNull(),
+  currency: text("currency").default("USD"),
+  paymentMethod: text("payment_method").notNull(),
+  paymentProvider: text("payment_provider").notNull(),
+  paymentId: text("payment_id"),
+  paymentStatus: text("payment_status").default("pending"),
+  paymentDetails: text("payment_details"), // JSON string
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Live sessions table
+export const liveSessions = pgTable("live_sessions", {
+  id: text("id").primaryKey(),
+  courseId: integer("course_id")
+    .notNull()
+    .references(() => courses.id, { onDelete: "cascade" }),
+  tutorId: text("tutor_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  scheduledDate: timestamp("scheduled_date").notNull(),
+  durationMinutes: integer("duration_minutes").default(60),
+  meetingLink: text("meeting_link"),
+  meetingPassword: text("meeting_password"),
+  status: text("status").default("scheduled"), // 'scheduled', 'live', 'completed', 'cancelled'
+  maxParticipants: integer("max_participants").default(50),
+  recordingUrl: text("recording_url"),
+  agenda: text("agenda"), // JSON string
+  materials: text("materials"), // JSON string
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Session participants table
+export const sessionParticipants = pgTable("session_participants", {
+  id: text("id").primaryKey(),
+  sessionId: text("session_id")
+    .notNull()
+    .references(() => liveSessions.id, { onDelete: "cascade" }),
+  studentId: text("student_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  joinedAt: timestamp("joined_at"),
+  leftAt: timestamp("left_at"),
+  attendanceDuration: integer("attendance_duration"), // in minutes
+  participated: boolean("participated").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Assignments table
+export const assignments = pgTable("assignments", {
+  id: text("id").primaryKey(),
+  courseId: integer("course_id")
+    .notNull()
+    .references(() => courses.id, { onDelete: "cascade" }),
+  tutorId: text("tutor_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  instructions: text("instructions"),
+  dueDate: timestamp("due_date").notNull(),
+  maxPoints: integer("max_points").default(100),
+  submissionType: text("submission_type").default("file"), // 'file', 'text', 'url'
+  allowedFileTypes: text("allowed_file_types"), // JSON array
+  maxFileSize: integer("max_file_size").default(10485760), // 10MB in bytes
+  isPublished: boolean("is_published").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Assignment submissions table
+export const assignmentSubmissions = pgTable("assignment_submissions", {
+  id: text("id").primaryKey(),
+  assignmentId: text("assignment_id")
+    .notNull()
+    .references(() => assignments.id, { onDelete: "cascade" }),
+  studentId: text("student_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  submissionText: text("submission_text"),
+  submissionUrl: text("submission_url"),
+  fileName: text("file_name"),
+  fileSize: integer("file_size"),
+  fileType: text("file_type"),
+  status: text("status").default("submitted"), // 'draft', 'submitted', 'graded', 'returned'
+  grade: integer("grade"),
+  feedback: text("feedback"),
+  gradedAt: timestamp("graded_at"),
+  gradedBy: text("graded_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Support tickets table
+export const supportTickets = pgTable("support_tickets", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  category: text("category").notNull(), // 'technical', 'billing', 'course', 'general'
+  priority: text("priority").default("normal"), // 'low', 'normal', 'high', 'urgent'
+  subject: text("subject").notNull(),
+  description: text("description").notNull(),
+  status: text("status").default("open"), // 'open', 'in_progress', 'resolved', 'closed'
+  assignedTo: text("assigned_to").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  resolution: text("resolution"),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Support ticket messages table
+export const supportTicketMessages = pgTable("support_ticket_messages", {
+  id: text("id").primaryKey(),
+  ticketId: text("ticket_id")
+    .notNull()
+    .references(() => supportTickets.id, { onDelete: "cascade" }),
+  senderId: text("sender_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  message: text("message").notNull(),
+  isInternal: boolean("is_internal").default(false), // for admin/staff notes
+  attachments: text("attachments"), // JSON array
+  createdAt: timestamp("created_at").defaultNow(),
 });
