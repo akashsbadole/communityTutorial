@@ -44,6 +44,10 @@ import LiveSessionJoin from "@/components/LiveSessionJoin";
 import AssignmentSubmission from "@/components/AssignmentSubmission";
 import MessageTutor from "@/components/MessageTutor";
 import GetSupport from "@/components/GetSupport";
+import ChatSystem from "@/components/ChatSystem";
+import { StudentOnly } from "@/components/RoleBasedRedirect";
+import Certificate from "@/components/Certificate";
+import CourseBooking from "@/components/CourseBooking";
 
 // Enhanced mock data with course details, assignments, and support
 const enhancedStudentData = {
@@ -302,6 +306,12 @@ export default function StudentDashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
   const [supportMessage, setSupportMessage] = useState("");
   const [selectedTicket, setSelectedTicket] = useState<number | null>(null);
+  const [showCourseBooking, setShowCourseBooking] = useState(false);
+  const [syllabusData, setSyllabusData] = useState<any>(null);
+  const [certificates, setCertificates] = useState<any[]>([]);
+  const [notices, setNotices] = useState<any[]>([]);
+  const [selectedCourseForBooking, setSelectedCourseForBooking] =
+    useState<any>(null);
 
   // Fetch real notifications from API
   useEffect(() => {
@@ -385,583 +395,656 @@ export default function StudentDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Welcome back, {user?.fullName || studentData.profile.name}!
-            </h1>
-            <p className="text-gray-600">Continue your learning journey</p>
-          </div>
+    <StudentOnly>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Welcome back, {user?.fullName || studentData.profile.name}!
+              </h1>
+              <p className="text-gray-600">Continue your learning journey</p>
+            </div>
 
-          {/* Enhanced Tabs Navigation */}
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="space-y-6"
-          >
-            <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger value="overview" className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                Overview
-              </TabsTrigger>
-              <TabsTrigger value="courses" className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4" />
-                My Courses
-              </TabsTrigger>
-              <TabsTrigger value="schedule" className="flex items-center gap-2">
-                <CalendarDays className="h-4 w-4" />
-                Schedule
-              </TabsTrigger>
-              <TabsTrigger
-                value="assignments"
-                className="flex items-center gap-2"
-              >
-                <ClipboardList className="h-4 w-4" />
-                Assignments
-              </TabsTrigger>
-              <TabsTrigger value="support" className="flex items-center gap-2">
-                <HeadphonesIcon className="h-4 w-4" />
-                Support
-              </TabsTrigger>
-              <TabsTrigger
-                value="achievements"
-                className="flex items-center gap-2"
-              >
-                <Award className="h-4 w-4" />
-                Achievements
-              </TabsTrigger>
-            </TabsList>
+            {/* Enhanced Tabs Navigation */}
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="space-y-6"
+            >
+              <TabsList className="grid w-full grid-cols-9">
+                <TabsTrigger
+                  value="overview"
+                  className="flex items-center gap-2"
+                >
+                  <TrendingUp className="h-4 w-4" />
+                  Overview
+                </TabsTrigger>
+                <TabsTrigger
+                  value="courses"
+                  className="flex items-center gap-2"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  My Courses
+                </TabsTrigger>
+                <TabsTrigger
+                  value="syllabus"
+                  className="flex items-center gap-2"
+                >
+                  <ClipboardList className="h-4 w-4" />
+                  Syllabus
+                </TabsTrigger>
+                <TabsTrigger
+                  value="certificates"
+                  className="flex items-center gap-2"
+                >
+                  <Award className="h-4 w-4" />
+                  Certificates
+                </TabsTrigger>
+                <TabsTrigger
+                  value="notices"
+                  className="flex items-center gap-2"
+                >
+                  <Bell className="h-4 w-4" />
+                  Notices
+                </TabsTrigger>
+                <TabsTrigger value="chat" className="flex items-center gap-2">
+                  <MessageCircle className="h-4 w-4" />
+                  Chat
+                </TabsTrigger>
+                <TabsTrigger
+                  value="schedule"
+                  className="flex items-center gap-2"
+                >
+                  <CalendarDays className="h-4 w-4" />
+                  Schedule
+                </TabsTrigger>
+                <TabsTrigger
+                  value="assignments"
+                  className="flex items-center gap-2"
+                >
+                  <ClipboardList className="h-4 w-4" />
+                  Assignments
+                </TabsTrigger>
+                <TabsTrigger
+                  value="support"
+                  className="flex items-center gap-2"
+                >
+                  <HeadphonesIcon className="h-4 w-4" />
+                  Support
+                </TabsTrigger>
+              </TabsList>
 
-            {/* Overview Tab */}
-            <TabsContent value="overview" className="space-y-6">
-              {/* Stats Overview */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">
-                          Enrolled Courses
-                        </p>
-                        <p className="text-2xl font-bold text-gray-900">
-                          {studentData.profile.enrolledCourses}
-                        </p>
+              {/* Overview Tab */}
+              <TabsContent value="overview" className="space-y-6">
+                {/* Stats Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">
+                            Enrolled Courses
+                          </p>
+                          <p className="text-2xl font-bold text-gray-900">
+                            {studentData.profile.enrolledCourses}
+                          </p>
+                        </div>
+                        <BookOpen className="h-8 w-8 text-blue-600" />
                       </div>
-                      <BookOpen className="h-8 w-8 text-blue-600" />
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">
-                          Completed
-                        </p>
-                        <p className="text-2xl font-bold text-gray-900">
-                          {studentData.profile.completedCourses}
-                        </p>
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">
+                            Completed
+                          </p>
+                          <p className="text-2xl font-bold text-gray-900">
+                            {studentData.profile.completedCourses}
+                          </p>
+                        </div>
+                        <CheckCircle className="h-8 w-8 text-green-600" />
                       </div>
-                      <CheckCircle className="h-8 w-8 text-green-600" />
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">
-                          Learning Hours
-                        </p>
-                        <p className="text-2xl font-bold text-gray-900">
-                          {studentData.profile.totalHours}
-                        </p>
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">
+                            Learning Hours
+                          </p>
+                          <p className="text-2xl font-bold text-gray-900">
+                            {studentData.profile.totalHours}
+                          </p>
+                        </div>
+                        <Clock className="h-8 w-8 text-purple-600" />
                       </div>
-                      <Clock className="h-8 w-8 text-purple-600" />
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">
-                          Avg Progress
-                        </p>
-                        <p className="text-2xl font-bold text-gray-900">
-                          {studentData.profile.averageProgress}%
-                        </p>
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">
+                            Avg Progress
+                          </p>
+                          <p className="text-2xl font-bold text-gray-900">
+                            {studentData.profile.averageProgress}%
+                          </p>
+                        </div>
+                        <TrendingUp className="h-8 w-8 text-orange-600" />
                       </div>
-                      <TrendingUp className="h-8 w-8 text-orange-600" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    </CardContent>
+                  </Card>
+                </div>
 
-              {/* Quick Actions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Button
-                      className="h-20 flex-col gap-2"
-                      variant="outline"
-                      onClick={() => setActiveTab("schedule")}
-                    >
-                      <Video className="h-6 w-6" />
-                      Join Live Session
-                    </Button>
-                    <Button
-                      className="h-20 flex-col gap-2"
-                      variant="outline"
-                      onClick={() => setActiveTab("assignments")}
-                    >
-                      <ClipboardList className="h-6 w-6" />
-                      Submit Assignment
-                    </Button>
-                    <Button
-                      className="h-20 flex-col gap-2"
-                      variant="outline"
-                      onClick={() => setActiveTab("courses")}
-                    >
-                      <MessageCircle className="h-6 w-6" />
-                      Message Tutor
-                    </Button>
-                    <Button
-                      className="h-20 flex-col gap-2"
-                      variant="outline"
-                      onClick={() => setActiveTab("support")}
-                    >
-                      <HelpCircle className="h-6 w-6" />
-                      Get Support
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Courses Tab */}
-            <TabsContent value="courses" className="space-y-6">
-              {studentData.enrolledCourses.map((course) => (
-                <Card key={course.id}>
+                {/* Quick Actions */}
+                <Card>
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-xl">
-                          {course.title}
-                        </CardTitle>
-                        <p className="text-gray-600">by {course.tutor}</p>
-                      </div>
-                      <Badge
-                        variant={
-                          course.status === "in-progress"
-                            ? "default"
-                            : "secondary"
-                        }
-                      >
-                        {course.status}
-                      </Badge>
-                    </div>
+                    <CardTitle>Quick Actions</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    {/* Course Progress */}
-                    <div>
-                      <div className="flex justify-between text-sm text-gray-600 mb-2">
-                        <span>Overall Progress</span>
-                        <span>{course.progress}%</span>
-                      </div>
-                      <Progress value={course.progress} className="h-3" />
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <Button
+                        className="h-20 flex-col gap-2"
+                        variant="outline"
+                        onClick={() => setActiveTab("schedule")}
+                      >
+                        <Video className="h-6 w-6" />
+                        Join Live Session
+                      </Button>
+                      <Button
+                        className="h-20 flex-col gap-2"
+                        variant="outline"
+                        onClick={() => setActiveTab("assignments")}
+                      >
+                        <ClipboardList className="h-6 w-6" />
+                        Submit Assignment
+                      </Button>
+                      <Button
+                        className="h-20 flex-col gap-2"
+                        variant="outline"
+                        onClick={() => setActiveTab("courses")}
+                      >
+                        <MessageCircle className="h-6 w-6" />
+                        Message Tutor
+                      </Button>
+                      <Button
+                        className="h-20 flex-col gap-2"
+                        variant="outline"
+                        onClick={() => setActiveTab("support")}
+                      >
+                        <HelpCircle className="h-6 w-6" />
+                        Get Support
+                      </Button>
                     </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
-                    {/* Course Syllabus */}
-                    {course.syllabus && (
+              {/* Courses Tab */}
+              <TabsContent value="courses" className="space-y-6">
+                {studentData.enrolledCourses.map((course) => (
+                  <Card key={course.id}>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="text-xl">
+                            {course.title}
+                          </CardTitle>
+                          <p className="text-gray-600">by {course.tutor}</p>
+                        </div>
+                        <Badge
+                          variant={
+                            course.status === "in-progress"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {course.status}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      {/* Course Progress */}
                       <div>
-                        <h4 className="font-semibold mb-3">Course Modules</h4>
-                        <div className="space-y-2">
-                          {course.syllabus.map((module, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center justify-between p-3 border rounded-lg"
-                            >
-                              <div className="flex items-center gap-3">
-                                {module.completed ? (
-                                  <CheckCircle className="h-5 w-5 text-green-600" />
-                                ) : (
-                                  <div className="h-5 w-5 border-2 border-gray-300 rounded-full" />
-                                )}
-                                <div>
-                                  <p className="font-medium">{module.module}</p>
-                                  <p className="text-sm text-gray-600">
-                                    {module.duration}
-                                  </p>
+                        <div className="flex justify-between text-sm text-gray-600 mb-2">
+                          <span>Overall Progress</span>
+                          <span>{course.progress}%</span>
+                        </div>
+                        <Progress value={course.progress} className="h-3" />
+                      </div>
+
+                      {/* Course Syllabus */}
+                      {course.syllabus && (
+                        <div>
+                          <h4 className="font-semibold mb-3">Course Modules</h4>
+                          <div className="space-y-2">
+                            {course.syllabus.map((module, index) => (
+                              <div
+                                key={index}
+                                className="flex items-center justify-between p-3 border rounded-lg"
+                              >
+                                <div className="flex items-center gap-3">
+                                  {module.completed ? (
+                                    <CheckCircle className="h-5 w-5 text-green-600" />
+                                  ) : (
+                                    <div className="h-5 w-5 border-2 border-gray-300 rounded-full" />
+                                  )}
+                                  <div>
+                                    <p className="font-medium">
+                                      {module.module}
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                      {module.duration}
+                                    </p>
+                                  </div>
                                 </div>
+                                {module.completed ? (
+                                  <Badge variant="secondary">Completed</Badge>
+                                ) : (
+                                  <Button size="sm" variant="outline">
+                                    <Play className="h-4 w-4 mr-1" />
+                                    Start
+                                  </Button>
+                                )}
                               </div>
-                              {module.completed ? (
-                                <Badge variant="secondary">Completed</Badge>
-                              ) : (
-                                <Button size="sm" variant="outline">
-                                  <Play className="h-4 w-4 mr-1" />
-                                  Start
-                                </Button>
-                              )}
-                            </div>
-                          ))}
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tutor Contact */}
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-3">
+                          Contact Your Tutor
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          <MessageTutor
+                            tutorId="tutor_001"
+                            tutorName="John Doe"
+                            tutorEmail={course.tutorEmail}
+                            tutorPhone={course.tutorPhone}
+                            tutorWhatsApp={course.tutorWhatsApp}
+                            courseId={course.id}
+                            courseName={course.title}
+                            onMessageSent={(messageData) => {
+                              toast.success(
+                                "Message sent to tutor successfully!"
+                              );
+                            }}
+                          />
+                          <Button size="sm" variant="outline" asChild>
+                            <a href={`mailto:${course.tutorEmail}`}>
+                              <Mail className="h-4 w-4 mr-1" />
+                              Email
+                            </a>
+                          </Button>
+                          {course.tutorPhone && (
+                            <Button size="sm" variant="outline" asChild>
+                              <a href={`tel:${course.tutorPhone}`}>
+                                <Phone className="h-4 w-4 mr-1" />
+                                Call
+                              </a>
+                            </Button>
+                          )}
+                          {course.tutorWhatsApp && (
+                            <Button size="sm" variant="outline" asChild>
+                              <a
+                                href={`https://wa.me/${course.tutorWhatsApp.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                )}`}
+                              >
+                                <MessageCircle className="h-4 w-4 mr-1" />
+                                WhatsApp
+                              </a>
+                            </Button>
+                          )}
                         </div>
                       </div>
-                    )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </TabsContent>
 
-                    {/* Tutor Contact */}
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-3">Contact Your Tutor</h4>
-                      <div className="flex flex-wrap gap-2">
-                        <MessageTutor
-                          tutorId="tutor_001"
-                          tutorName="John Doe"
-                          tutorEmail={course.tutorEmail}
-                          tutorPhone={course.tutorPhone}
-                          tutorWhatsApp={course.tutorWhatsApp}
-                          courseId={course.id}
-                          courseName={course.title}
-                          onMessageSent={(messageData) => {
-                            toast.success(
-                              "Message sent to tutor successfully!"
-                            );
-                          }}
-                        />
-                        <Button size="sm" variant="outline" asChild>
-                          <a href={`mailto:${course.tutorEmail}`}>
-                            <Mail className="h-4 w-4 mr-1" />
-                            Email
-                          </a>
-                        </Button>
-                        {course.tutorPhone && (
-                          <Button size="sm" variant="outline" asChild>
-                            <a href={`tel:${course.tutorPhone}`}>
-                              <Phone className="h-4 w-4 mr-1" />
-                              Call
-                            </a>
-                          </Button>
-                        )}
-                        {course.tutorWhatsApp && (
-                          <Button size="sm" variant="outline" asChild>
-                            <a
-                              href={`https://wa.me/${course.tutorWhatsApp.replace(
-                                /[^0-9]/g,
-                                ""
-                              )}`}
-                            >
-                              <MessageCircle className="h-4 w-4 mr-1" />
-                              WhatsApp
-                            </a>
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </TabsContent>
-
-            {/* Support Tab */}
-            <TabsContent value="support" className="space-y-6">
-              <div className="grid lg:grid-cols-2 gap-6">
-                {/* Create New Ticket */}
+              {/* Chat Tab */}
+              <TabsContent value="chat" className="space-y-6">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <HelpCircle className="h-5 w-5" />
-                      Need Help?
+                      <MessageCircle className="h-5 w-5" />
+                      Private Chat with Tutors
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-gray-600">
-                      Get help with technical issues, billing questions, course
-                      content, or general support.
-                    </p>
-
-                    <div className="flex gap-3">
-                      <GetSupport
-                        onTicketCreated={(ticketData) => {
-                          toast.success(
-                            `Support ticket #${ticketData.ticketNumber} created successfully!`
-                          );
-                        }}
-                      />
-                      <Button variant="outline" size="sm" asChild>
-                        <a
-                          href="https://wa.me/+15551234567?text=Hi, I need help with TrainingHub"
-                          target="_blank"
-                        >
-                          <MessageCircle className="h-4 w-4 mr-2" />
-                          WhatsApp
-                        </a>
-                      </Button>
+                  <CardContent>
+                    <div className="mb-4">
+                      <Badge variant="outline" className="mb-4">
+                        🔒 This is dummy chat data for demonstration
+                      </Badge>
+                      <p className="text-gray-600 mb-4">
+                        Chat privately with your tutors about course content,
+                        assignments, and get personalized help. Both you and
+                        your tutor must agree to privacy policy to enable chat.
+                      </p>
                     </div>
 
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-blue-900 mb-2">
-                        Quick Help
-                      </h4>
-                      <div className="space-y-2 text-sm">
-                        <p>
-                          • <strong>Technical Issues:</strong> Login problems,
-                          video playback
-                        </p>
-                        <p>
-                          • <strong>Billing:</strong> Payment issues, refunds
-                        </p>
-                        <p>
-                          • <strong>Course Content:</strong> Assignments,
-                          materials
-                        </p>
-                        <p>
-                          • <strong>General:</strong> Other questions and
-                          support
-                        </p>
-                      </div>
-                    </div>
+                    <ChatSystem
+                      tutorId="tutor_001"
+                      studentId="student_001"
+                      courseId={1}
+                      courseName="WordPress Development Mastery"
+                      onChatStarted={(roomId) => {
+                        toast.success("Chat room created successfully!");
+                      }}
+                    />
                   </CardContent>
                 </Card>
+              </TabsContent>
 
-                {/* Support Tickets */}
+              {/* Support Tab */}
+              <TabsContent value="support" className="space-y-6">
+                <div className="grid lg:grid-cols-2 gap-6">
+                  {/* Create New Ticket */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <HelpCircle className="h-5 w-5" />
+                        Need Help?
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-gray-600">
+                        Get help with technical issues, billing questions,
+                        course content, or general support.
+                      </p>
+
+                      <div className="flex gap-3">
+                        <GetSupport
+                          onTicketCreated={(ticketData) => {
+                            toast.success(
+                              `Support ticket #${ticketData.ticketNumber} created successfully!`
+                            );
+                          }}
+                        />
+                        <Button variant="outline" size="sm" asChild>
+                          <a
+                            href="https://wa.me/+15551234567?text=Hi, I need help with TrainingHub"
+                            target="_blank"
+                          >
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            WhatsApp
+                          </a>
+                        </Button>
+                      </div>
+
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <h4 className="font-medium text-blue-900 mb-2">
+                          Quick Help
+                        </h4>
+                        <div className="space-y-2 text-sm">
+                          <p>
+                            • <strong>Technical Issues:</strong> Login problems,
+                            video playback
+                          </p>
+                          <p>
+                            • <strong>Billing:</strong> Payment issues, refunds
+                          </p>
+                          <p>
+                            • <strong>Course Content:</strong> Assignments,
+                            materials
+                          </p>
+                          <p>
+                            • <strong>General:</strong> Other questions and
+                            support
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Support Tickets */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>My Support Tickets</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {studentData.supportTickets.map((ticket) => (
+                          <div
+                            key={ticket.id}
+                            className="border rounded-lg p-4"
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <h3 className="font-medium">{ticket.subject}</h3>
+                              <Badge
+                                variant={
+                                  ticket.status === "open"
+                                    ? "default"
+                                    : "secondary"
+                                }
+                              >
+                                {ticket.status}
+                              </Badge>
+                            </div>
+                            <div className="text-sm text-gray-600 mb-3">
+                              <p>
+                                Created:{" "}
+                                {new Date(
+                                  ticket.createdDate
+                                ).toLocaleDateString()}
+                              </p>
+                              <p>Priority: {ticket.priority}</p>
+                            </div>
+                            <Button size="sm" variant="outline">
+                              View Conversation
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              {/* Schedule Tab */}
+              <TabsContent value="schedule" className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>My Support Tickets</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5" />
+                      Upcoming Sessions
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {studentData.supportTickets.map((ticket) => (
-                        <div key={ticket.id} className="border rounded-lg p-4">
-                          <div className="flex items-start justify-between mb-2">
-                            <h3 className="font-medium">{ticket.subject}</h3>
-                            <Badge
-                              variant={
-                                ticket.status === "open"
-                                  ? "default"
-                                  : "secondary"
-                              }
-                            >
-                              {ticket.status}
-                            </Badge>
+                      {studentData.upcomingSessions.map((session) => (
+                        <div key={session.id} className="border rounded-lg p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div>
+                              <h3 className="font-semibold text-lg">
+                                {session.course}
+                              </h3>
+                              <p className="text-gray-600">
+                                with {session.tutor}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {session.topic}
+                              </p>
+                            </div>
+                            <Badge variant="outline">{session.type}</Badge>
                           </div>
-                          <div className="text-sm text-gray-600 mb-3">
-                            <p>
-                              Created:{" "}
-                              {new Date(
-                                ticket.createdDate
-                              ).toLocaleDateString()}
-                            </p>
-                            <p>Priority: {ticket.priority}</p>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm">
+                            <div>
+                              <p className="text-gray-600">Date</p>
+                              <p className="font-medium">
+                                {new Date(session.date).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-gray-600">Time</p>
+                              <p className="font-medium">{session.time}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-600">Duration</p>
+                              <p className="font-medium">{session.duration}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-600">Status</p>
+                              <Badge variant="secondary">Scheduled</Badge>
+                            </div>
                           </div>
-                          <Button size="sm" variant="outline">
-                            View Conversation
-                          </Button>
+                          <div className="flex gap-2">
+                            <LiveSessionJoin
+                              sessionId={`session_${session.id}`}
+                              onJoinSuccess={(sessionData) => {
+                                toast.success(
+                                  `Joined ${sessionData.title} successfully!`
+                                );
+                              }}
+                            />
+                            <Button variant="outline">
+                              <Calendar className="h-4 w-4 mr-1" />
+                              Add to Calendar
+                            </Button>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </CardContent>
                 </Card>
-              </div>
-            </TabsContent>
+              </TabsContent>
 
-            {/* Schedule Tab */}
-            <TabsContent value="schedule" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
-                    Upcoming Sessions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {studentData.upcomingSessions.map((session) => (
-                      <div key={session.id} className="border rounded-lg p-6">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <h3 className="font-semibold text-lg">
-                              {session.course}
-                            </h3>
-                            <p className="text-gray-600">
-                              with {session.tutor}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {session.topic}
-                            </p>
-                          </div>
-                          <Badge variant="outline">{session.type}</Badge>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm">
-                          <div>
-                            <p className="text-gray-600">Date</p>
-                            <p className="font-medium">
-                              {new Date(session.date).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Time</p>
-                            <p className="font-medium">{session.time}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Duration</p>
-                            <p className="font-medium">{session.duration}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Status</p>
-                            <Badge variant="secondary">Scheduled</Badge>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <LiveSessionJoin
-                            sessionId={`session_${session.id}`}
-                            onJoinSuccess={(sessionData) => {
-                              toast.success(
-                                `Joined ${sessionData.title} successfully!`
-                              );
-                            }}
-                          />
-                          <Button variant="outline">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            Add to Calendar
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Assignments Tab */}
-            <TabsContent value="assignments" className="space-y-6">
-              <div className="grid grid-cols-1 gap-6">
-                {/* Sample assignments using the new component */}
-                <AssignmentSubmission
-                  assignment={{
-                    id: "assignment_001",
-                    title: "Create Your First WordPress Theme",
-                    description:
-                      "Build a custom WordPress theme from scratch using HTML, CSS, and PHP",
-                    instructions:
-                      "Create a responsive WordPress theme with header, footer, and main content area. Include custom post types and fields. Follow WordPress coding standards and best practices.",
-                    dueDate: new Date(
-                      Date.now() + 14 * 24 * 60 * 60 * 1000
-                    ).toISOString(),
-                    maxPoints: 100,
-                    submissionType: "file",
-                    allowedFileTypes: [".zip", ".rar", ".tar.gz"],
-                    maxFileSize: 10485760, // 10MB
-                    course: {
-                      id: 1,
-                      title: "WordPress Development Mastery",
-                    },
-                    tutor: {
-                      id: "tutor_001",
-                      name: "John Doe",
-                    },
-                    submission: {
-                      id: "submission_001",
-                      status: "graded",
-                      submittedAt: new Date(
-                        Date.now() - 7 * 24 * 60 * 60 * 1000
+              {/* Assignments Tab */}
+              <TabsContent value="assignments" className="space-y-6">
+                <div className="grid grid-cols-1 gap-6">
+                  {/* Sample assignments using the new component */}
+                  <AssignmentSubmission
+                    assignment={{
+                      id: "assignment_001",
+                      title: "Create Your First WordPress Theme",
+                      description:
+                        "Build a custom WordPress theme from scratch using HTML, CSS, and PHP",
+                      instructions:
+                        "Create a responsive WordPress theme with header, footer, and main content area. Include custom post types and fields. Follow WordPress coding standards and best practices.",
+                      dueDate: new Date(
+                        Date.now() + 14 * 24 * 60 * 60 * 1000
                       ).toISOString(),
-                      fileName: "my-wordpress-theme.zip",
-                      fileSize: 2048576,
-                      grade: 85,
-                      feedback:
-                        "Great work! The theme structure is well organized. Consider adding more custom post types for better functionality.",
-                      gradedAt: new Date(
-                        Date.now() - 5 * 24 * 60 * 60 * 1000
+                      maxPoints: 100,
+                      submissionType: "file",
+                      allowedFileTypes: [".zip", ".rar", ".tar.gz"],
+                      maxFileSize: 10485760, // 10MB
+                      course: {
+                        id: 1,
+                        title: "WordPress Development Mastery",
+                      },
+                      tutor: {
+                        id: "tutor_001",
+                        name: "John Doe",
+                      },
+                      submission: {
+                        id: "submission_001",
+                        status: "graded",
+                        submittedAt: new Date(
+                          Date.now() - 7 * 24 * 60 * 60 * 1000
+                        ).toISOString(),
+                        fileName: "my-wordpress-theme.zip",
+                        fileSize: 2048576,
+                        grade: 85,
+                        feedback:
+                          "Great work! The theme structure is well organized. Consider adding more custom post types for better functionality.",
+                        gradedAt: new Date(
+                          Date.now() - 5 * 24 * 60 * 60 * 1000
+                        ).toISOString(),
+                      },
+                    }}
+                    onSubmissionSuccess={(submissionData) => {
+                      toast.success("Assignment submitted successfully!");
+                    }}
+                  />
+
+                  <AssignmentSubmission
+                    assignment={{
+                      id: "assignment_002",
+                      title: "WordPress Plugin Development",
+                      description:
+                        "Develop a custom WordPress plugin with admin interface",
+                      instructions:
+                        "Create a plugin that adds custom functionality to WordPress with proper hooks and filters. Include an admin settings page and follow WordPress plugin development guidelines.",
+                      dueDate: new Date(
+                        Date.now() + 21 * 24 * 60 * 60 * 1000
                       ).toISOString(),
-                    },
-                  }}
-                  onSubmissionSuccess={(submissionData) => {
-                    toast.success("Assignment submitted successfully!");
-                  }}
-                />
+                      maxPoints: 150,
+                      submissionType: "file",
+                      allowedFileTypes: [".zip", ".rar"],
+                      maxFileSize: 5242880, // 5MB
+                      course: {
+                        id: 1,
+                        title: "WordPress Development Mastery",
+                      },
+                      tutor: {
+                        id: "tutor_001",
+                        name: "John Doe",
+                      },
+                      // No submission yet
+                    }}
+                    onSubmissionSuccess={(submissionData) => {
+                      toast.success("Assignment submitted successfully!");
+                    }}
+                  />
+                </div>
+              </TabsContent>
 
-                <AssignmentSubmission
-                  assignment={{
-                    id: "assignment_002",
-                    title: "WordPress Plugin Development",
-                    description:
-                      "Develop a custom WordPress plugin with admin interface",
-                    instructions:
-                      "Create a plugin that adds custom functionality to WordPress with proper hooks and filters. Include an admin settings page and follow WordPress plugin development guidelines.",
-                    dueDate: new Date(
-                      Date.now() + 21 * 24 * 60 * 60 * 1000
-                    ).toISOString(),
-                    maxPoints: 150,
-                    submissionType: "file",
-                    allowedFileTypes: [".zip", ".rar"],
-                    maxFileSize: 5242880, // 5MB
-                    course: {
-                      id: 1,
-                      title: "WordPress Development Mastery",
-                    },
-                    tutor: {
-                      id: "tutor_001",
-                      name: "John Doe",
-                    },
-                    // No submission yet
-                  }}
-                  onSubmissionSuccess={(submissionData) => {
-                    toast.success("Assignment submitted successfully!");
-                  }}
-                />
-              </div>
-            </TabsContent>
-
-            {/* Achievements Tab */}
-            <TabsContent value="achievements" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Award className="h-5 w-5" />
-                    Your Achievements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {studentData.achievements.map((achievement) => (
-                      <div
-                        key={achievement.id}
-                        className="border rounded-lg p-6"
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className="text-4xl">{achievement.icon}</div>
-                          <div>
-                            <h3 className="font-semibold text-lg">
-                              {achievement.title}
-                            </h3>
-                            <p className="text-gray-600 mb-2">
-                              {achievement.description}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Earned on{" "}
-                              {new Date(
-                                achievement.earnedDate
-                              ).toLocaleDateString()}
-                            </p>
+              {/* Achievements Tab */}
+              <TabsContent value="achievements" className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Award className="h-5 w-5" />
+                      Your Achievements
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {studentData.achievements.map((achievement) => (
+                        <div
+                          key={achievement.id}
+                          className="border rounded-lg p-6"
+                        >
+                          <div className="flex items-start gap-4">
+                            <div className="text-4xl">{achievement.icon}</div>
+                            <div>
+                              <h3 className="font-semibold text-lg">
+                                {achievement.title}
+                              </h3>
+                              <p className="text-gray-600 mb-2">
+                                {achievement.description}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                Earned on{" "}
+                                {new Date(
+                                  achievement.earnedDate
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
-    </div>
+    </StudentOnly>
   );
 }

@@ -68,5 +68,15 @@
     "message": "Testing the new JSON system",
     "status": "pending",
     "submittedAt": "2025-05-25T19:00:41.730Z"
+  },
+  {
+    "id": 2,
+    "studentName": "akash",
+    "studentEmail": "akki4u0@gmail.com",
+    "courseSlug": "wordpress",
+    "courseName": "WordPress Course",
+    "message": "i want to enroll",
+    "status": "pending",
+    "submittedAt": "2025-05-27T19:02:49.644Z"
   }
 ]

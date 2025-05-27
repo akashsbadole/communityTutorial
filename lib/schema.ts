@@ -71,6 +71,7 @@ export const users = pgTable("users", {
   phone: text("phone"),
   whatsapp: text("whatsapp"),
   role: text("role").notNull(), // 'student', 'tutor', 'admin'
+  isSuperAdmin: boolean("is_super_admin").default(false),
   profileCompleted: boolean("profile_completed").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -389,4 +390,97 @@ export const supportTicketMessages = pgTable("support_ticket_messages", {
   isInternal: boolean("is_internal").default(false), // for admin/staff notes
   attachments: text("attachments"), // JSON array
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Admin activities table for audit logs
+export const adminActivities = pgTable("admin_activities", {
+  id: text("id").primaryKey(),
+  adminId: text("admin_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  action: text("action").notNull(),
+  targetType: text("target_type").notNull(),
+  targetId: text("target_id"),
+  details: text("details"), // JSON string
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Chat rooms table
+export const chatRooms = pgTable("chat_rooms", {
+  id: text("id").primaryKey(),
+  studentId: text("student_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  tutorId: text("tutor_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  courseId: integer("course_id").references(() => courses.id, {
+    onDelete: "set null",
+  }),
+  isActive: boolean("is_active").default(true),
+  privacyConsentStudent: boolean("privacy_consent_student").default(false),
+  privacyConsentTutor: boolean("privacy_consent_tutor").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Chat messages table
+export const chatMessages = pgTable("chat_messages", {
+  id: text("id").primaryKey(),
+  roomId: text("room_id")
+    .notNull()
+    .references(() => chatRooms.id, { onDelete: "cascade" }),
+  senderId: text("sender_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  message: text("message").notNull(),
+  messageType: text("message_type").default("text"),
+  fileUrl: text("file_url"),
+  fileName: text("file_name"),
+  fileSize: integer("file_size"),
+  isRead: boolean("is_read").default(false),
+  isDeleted: boolean("is_deleted").default(false),
+  replyToId: text("reply_to_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SMS notifications table
+export const smsNotifications = pgTable("sms_notifications", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  phoneNumber: text("phone_number").notNull(),
+  message: text("message").notNull(),
+  smsType: text("sms_type").notNull(),
+  sessionId: text("session_id").references(() => liveSessions.id, {
+    onDelete: "set null",
+  }),
+  courseId: integer("course_id").references(() => courses.id, {
+    onDelete: "set null",
+  }),
+  status: text("status").default("pending"),
+  twilioSid: text("twilio_sid"),
+  sentAt: timestamp("sent_at"),
+  deliveredAt: timestamp("delivered_at"),
+  errorMessage: text("error_message"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// System settings table
+export const systemSettings = pgTable("system_settings", {
+  id: text("id").primaryKey(),
+  settingKey: text("setting_key").notNull().unique(),
+  settingValue: text("setting_value").notNull(),
+  settingType: text("setting_type").default("string"),
+  description: text("description"),
+  isPublic: boolean("is_public").default(false),
+  updatedBy: text("updated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });

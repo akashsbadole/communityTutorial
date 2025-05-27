@@ -26,7 +26,17 @@ export default async function CoursePage({ params }: CoursePageProps) {
   // Parse the syllabus JSON
   let syllabusData;
   try {
-    syllabusData = JSON.parse(course.syllabus);
+    // Handle both string and object syllabus data
+    if (typeof course.syllabus === "string") {
+      syllabusData = JSON.parse(course.syllabus);
+    } else if (
+      typeof course.syllabus === "object" &&
+      course.syllabus !== null
+    ) {
+      syllabusData = course.syllabus;
+    } else {
+      syllabusData = { modules: [] };
+    }
   } catch (error) {
     console.error("Error parsing syllabus:", error);
     syllabusData = { modules: [] };

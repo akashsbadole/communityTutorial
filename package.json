@@ -21,6 +21,7 @@
     "@hookform/resolvers": "^3.9.1",
     "@libsql/client": "latest",
     "@libsql/client-wasm": "latest",
+    "@mailchimp/mailchimp_marketing": "^3.0.80",
     "@neondatabase/serverless": "latest",
     "@op-engineering/op-sqlite": "latest",
     "@opentelemetry/api": "latest",
@@ -93,6 +94,7 @@
     "sqlite3": "latest",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "twilio": "^5.6.1",
     "vaul": "^0.9.6",
     "zod": "^3.24.1"
   },

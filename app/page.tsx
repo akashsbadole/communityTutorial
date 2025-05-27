@@ -22,6 +22,12 @@ import {
   Star,
   Globe,
   Briefcase,
+  Video,
+  FileText,
+  HelpCircle,
+  Sparkles,
+  Rocket,
+  Play,
 } from "lucide-react";
 import { getAllCourses } from "@/lib/db";
 import { StickyEnrollmentForm } from "@/components/sticky-enrollment-form";
@@ -57,15 +63,92 @@ export default async function HomePage() {
           </div>
         )}
 
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Master Your Skills with Expert Training
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Join thousands of students learning WordPress, Shopify, and Web
-            Development through our comprehensive online courses taught by
-            industry experts.
-          </p>
+        {/* Modern Hero Section */}
+        <div className="text-center mb-20">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl blur-3xl"></div>
+            <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-12 shadow-2xl border border-white/20">
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Sparkles className="h-4 w-4" />
+                <span>New Interactive Features Available!</span>
+              </div>
+
+              <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-6">
+                Master Your Skills with Expert Training
+              </h1>
+
+              <p className="text-xl text-gray-600 max-w-4xl mx-auto mb-8">
+                Join thousands of students learning WordPress, Shopify, and Web
+                Development through our comprehensive online courses with{" "}
+                <strong>live sessions</strong>, <strong>real-time chat</strong>,
+                <strong>assignment submissions</strong>, and{" "}
+                <strong>24/7 support</strong>.
+              </p>
+
+              {/* Feature Highlights */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                <div className="flex flex-col items-center p-4 bg-blue-50 rounded-xl">
+                  <Video className="h-8 w-8 text-blue-600 mb-2" />
+                  <span className="text-sm font-medium text-blue-900">
+                    Live Sessions
+                  </span>
+                </div>
+                <div className="flex flex-col items-center p-4 bg-green-50 rounded-xl">
+                  <MessageCircle className="h-8 w-8 text-green-600 mb-2" />
+                  <span className="text-sm font-medium text-green-900">
+                    Real-time Chat
+                  </span>
+                </div>
+                <div className="flex flex-col items-center p-4 bg-purple-50 rounded-xl">
+                  <FileText className="h-8 w-8 text-purple-600 mb-2" />
+                  <span className="text-sm font-medium text-purple-900">
+                    Assignments
+                  </span>
+                </div>
+                <div className="flex flex-col items-center p-4 bg-orange-50 rounded-xl">
+                  <HelpCircle className="h-8 w-8 text-orange-600 mb-2" />
+                  <span className="text-sm font-medium text-orange-900">
+                    24/7 Support
+                  </span>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg"
+                >
+                  <Rocket className="h-5 w-5 mr-2" />
+                  Start Learning Today
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-gray-300 hover:border-blue-600 px-8 py-4 text-lg font-semibold"
+                >
+                  <Play className="h-5 w-5 mr-2" />
+                  Watch Demo
+                </Button>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-gray-200">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600">5,000+</div>
+                  <div className="text-sm text-gray-600">Students Enrolled</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600">98%</div>
+                  <div className="text-sm text-gray-600">Satisfaction Rate</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-600">24/7</div>
+                  <div className="text-sm text-gray-600">Expert Support</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
