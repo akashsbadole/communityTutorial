@@ -16,7 +16,7 @@ export function AuthHeader() {
   return (
     <header className="bg-white shadow-sm border-b">
       <div className="container mx-auto px-4 py-4">
-        <nav className="flex items-center justify-between">
+        <nav className="flex items-center justify-between text-sm">
           <Link href="/" className="text-2xl font-bold text-blue-600">
             TrainingHub
           </Link>
@@ -32,6 +32,24 @@ export function AuthHeader() {
               className="text-gray-600 hover:text-gray-900"
             >
               Subjects
+            </Link>
+            <Link
+              href="/interview"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              Interview Questions
+            </Link>
+            <Link
+              href="/interview-practice"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              AI Interview Practice
+            </Link>
+            <Link
+              href="/interview-simple"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              Simple Interview
             </Link>
             {isLoaded && (
               <SignedIn>

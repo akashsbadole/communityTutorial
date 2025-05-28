@@ -24,6 +24,7 @@ import {
   Coffee,
   Heart,
   ExternalLink,
+  Video,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -35,6 +36,32 @@ const footerSections = [
       { name: "Shopify Course", href: "/course/shopify", icon: ShoppingCart },
       { name: "Web Development", href: "/course/webdev", icon: Code },
       { name: "All Courses", href: "/", icon: BookOpen },
+    ],
+  },
+  {
+    title: "Interview Prep",
+    links: [
+      { name: "Interview Questions", href: "/interview", icon: HelpCircle },
+      {
+        name: "AI Interview Practice",
+        href: "/interview-practice",
+        icon: Code,
+      },
+      {
+        name: "Simple Interview",
+        href: "/interview-simple",
+        icon: Video,
+      },
+      {
+        name: "Tutorials",
+        href: "/interview/javascript/tutorials",
+        icon: BookOpen,
+      },
+      {
+        name: "Practice Tests",
+        href: "/interview/javascript/questions",
+        icon: FileText,
+      },
     ],
   },
   {
@@ -53,15 +80,15 @@ const footerSections = [
       { name: "Terms of Service", href: "/terms", icon: FileText },
     ],
   },
-  {
-    title: "Company",
-    links: [
-      { name: "About Us", href: "/about", icon: null },
-      { name: "Our Mission", href: "/about#mission", icon: null },
-      { name: "Instructors", href: "/about#team", icon: null },
-      { name: "Careers", href: "/about#careers", icon: null },
-    ],
-  },
+  // {
+  //   title: "Company",
+  //   links: [
+  //     { name: "About Us", href: "/about", icon: null },
+  //     { name: "Our Mission", href: "/about#mission", icon: null },
+  //     { name: "Instructors", href: "/about#team", icon: null },
+  //     { name: "Careers", href: "/about#careers", icon: null },
+  //   ],
+  // },
 ];
 
 const socialLinks = [
@@ -147,7 +174,7 @@ export function Footer() {
             >
               TrainingHub
             </Link>
-            <p className="text-gray-300 mb-6 leading-relaxed">
+            <p className="text-gray-300 mb-6 leading-relaxed text-sm">
               Empowering developers and entrepreneurs with comprehensive online
               courses in WordPress, Shopify, and Web Development. Learn from
               industry experts and build your dream career.
@@ -157,15 +184,17 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-gray-300">
                 <Mail className="h-4 w-4 text-blue-400" />
-                <span>info@seoauditcheck.com</span>
+                <span className="text-[10px]">info@seoauditcheck.com</span>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Phone className="h-4 w-4 text-blue-400" />
-                <span>+1 (555) 123-4567</span>
+                <span className="text-[10px]">+1 (555) 123-4567</span>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <MapPin className="h-4 w-4 text-blue-400" />
-                <span>123 Learning Street, Education City</span>
+                <span className="text-[10px]">
+                  123 Learning Street, Education City
+                </span>
               </div>
             </div>
           </div>
@@ -173,7 +202,7 @@ export function Footer() {
           {/* Footer Links */}
           {footerSections.map((section, index) => (
             <div key={index} className="lg:col-span-1">
-              <h3 className="text-lg font-semibold text-white mb-4">
+              <h3 className="text-lg font-semibold text-white mb-4 text-[13px]">
                 {section.title}
               </h3>
               <ul className="space-y-3">
@@ -183,7 +212,7 @@ export function Footer() {
                     <li key={linkIndex}>
                       <Link
                         href={link.href}
-                        className="text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-2"
+                        className="text-gray-300 text-sm hover:text-blue-400 transition-colors flex items-center gap-2"
                       >
                         {IconComponent && <IconComponent className="h-4 w-4" />}
                         {link.name}
@@ -201,7 +230,7 @@ export function Footer() {
           <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
             {/* Social Links */}
             <div className="flex items-center gap-4">
-              <span className="text-gray-300 mr-2">Follow us:</span>
+              <span className="text-gray-300 mr-2 text-[11px]">Follow us:</span>
               {socialLinks.map((social, index) => {
                 const IconComponent = social.icon;
                 return (
@@ -219,7 +248,7 @@ export function Footer() {
 
             {/* Newsletter Signup */}
             <div className="flex items-center gap-3">
-              <span className="text-gray-300">Stay updated:</span>
+              <span className="text-gray-300 text-[11px]">Stay updated:</span>
               <form onSubmit={handleEmailSubscription} className="flex gap-2">
                 <div className="relative">
                   <input
@@ -228,7 +257,7 @@ export function Footer() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     disabled={isSubscribing}
-                    className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-[10px]"
                     required
                   />
                   {subscriptionStatus === "success" && (
@@ -246,12 +275,12 @@ export function Footer() {
                   {isSubscribing ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Subscribing...</span>
+                      <span className="text-[10px]">Subscribing...</span>
                     </>
                   ) : (
                     <>
                       <Mail className="h-4 w-4" />
-                      <span>Subscribe</span>
+                      <span className="text-[10px]">Subscribe</span>
                     </>
                   )}
                 </button>
@@ -260,15 +289,15 @@ export function Footer() {
 
             {/* Donation Button */}
             <div className="flex items-center gap-3">
-              <span className="text-gray-300">Support us:</span>
+              <span className="text-gray-300 text-[10px]">Support us:</span>
               <a
                 href="https://www.buymeacoffee.com/akashbad"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-md transition-all duration-300 flex items-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="px-2 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-md transition-all duration-300 flex items-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 <Coffee className="h-4 w-4" />
-                <span>Buy me a coffee</span>
+                <span className="text-[10px]">Buy me a coffee</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
             </div>
@@ -282,7 +311,7 @@ export function Footer() {
               © {new Date().getFullYear()} TrainingHub. All rights reserved.
             </div>
 
-            <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-6 text-[12px]">
               <Link
                 href="/privacy"
                 className="text-gray-400 hover:text-blue-400 transition-colors"
