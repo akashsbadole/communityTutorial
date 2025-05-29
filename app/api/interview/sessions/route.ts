@@ -115,7 +115,32 @@ async function handlePOST(request: NextRequest) {
     const sessionId = `session_${Date.now()}_${Math.random()
       .toString(36)
       .substr(2, 9)}`;
-    const studentId = context?.dbUser?.id || "anonymous_user";
+
+    // Handle anonymous users - don't store in database
+    if (!context?.dbUser?.id) {
+      console.log(
+        "[API] Creating anonymous interview session (no database storage)"
+      );
+
+      return NextResponse.json({
+        success: true,
+        sessionId,
+        session: {
+          id: sessionId,
+          language_id: sanitizedLanguageId,
+          language_name: language[0].name,
+          total_questions: questions.length,
+          current_question: 1,
+          session_status: "in_progress",
+          start_time: new Date().toISOString(),
+          questions: questions,
+          settings: sessionSettings,
+          anonymous: true,
+        },
+      });
+    }
+
+    const studentId = context.dbUser.id;
 
     await sql`
       INSERT INTO interview_sessions (

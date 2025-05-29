@@ -28,6 +28,9 @@ import {
   Sparkles,
   Rocket,
   Play,
+  Volume2,
+  Shield,
+  Zap,
 } from "lucide-react";
 import { getAllCourses } from "@/lib/db";
 import { StickyEnrollmentForm } from "@/components/sticky-enrollment-form";
@@ -146,6 +149,194 @@ export default async function HomePage() {
                   <div className="text-3xl font-bold text-purple-600">24/7</div>
                   <div className="text-sm text-gray-600">Expert Support</div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Interview Platform - Featured Section */}
+        <div className="mb-20">
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl shadow-2xl p-8 md:p-12 max-w-6xl mx-auto text-white relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/20 to-transparent"></div>
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full"></div>
+              <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-white/10 rounded-full"></div>
+            </div>
+
+            <div className="relative z-10">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-6">
+                  <Video className="h-10 w-10 text-white" />
+                </div>
+                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                  🚀 AI Interview Practice Platform
+                </h2>
+                <p className="text-xl md:text-2xl text-purple-100 max-w-4xl mx-auto mb-6">
+                  Master your interview skills with our cutting-edge AI-powered
+                  platform featuring
+                  <strong className="text-white">
+                    {" "}
+                    real-time video analysis
+                  </strong>
+                  ,<strong className="text-white"> instant feedback</strong>,
+                  and
+                  <strong className="text-white">
+                    {" "}
+                    privacy-first approach
+                  </strong>
+                </p>
+                <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
+                  <Sparkles className="h-4 w-4" />
+                  <span>Most Popular Feature - Try Free Now!</span>
+                </div>
+              </div>
+
+              {/* Key Features Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-4">
+                    <Video className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    5-Min Video Analysis
+                  </h3>
+                  <p className="text-purple-100 text-sm">
+                    Real-time facial expression, eye contact, and posture
+                    analysis with auto-deletion
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-4">
+                    <Volume2 className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    AI Voice Interviewer
+                  </h3>
+                  <p className="text-purple-100 text-sm">
+                    Natural TTS questions with speech analysis and confidence
+                    scoring
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-4">
+                    <Shield className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Privacy Protected
+                  </h3>
+                  <p className="text-purple-100 text-sm">
+                    No video storage - everything deleted immediately after
+                    session
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-4">
+                    <Zap className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Instant Feedback
+                  </h3>
+                  <p className="text-purple-100 text-sm">
+                    Live analysis with downloadable results and improvement
+                    suggestions
+                  </p>
+                </div>
+              </div>
+
+              {/* 3-Step Process */}
+              <div className="bg-white/10 rounded-2xl p-8 mb-8">
+                <h3 className="text-2xl font-bold text-center mb-8">
+                  Simple 3-Step Process
+                </h3>
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-xl font-bold">1</span>
+                    </div>
+                    <h4 className="text-lg font-semibold mb-2">
+                      Start Interview
+                    </h4>
+                    <p className="text-purple-100 text-sm">
+                      Click start, allow camera access, and begin your practice
+                      session
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-xl font-bold">2</span>
+                    </div>
+                    <h4 className="text-lg font-semibold mb-2">
+                      Answer Questions
+                    </h4>
+                    <p className="text-purple-100 text-sm">
+                      Listen to AI questions and answer while getting real-time
+                      feedback
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-xl font-bold">3</span>
+                    </div>
+                    <h4 className="text-lg font-semibold mb-2">Get Results</h4>
+                    <p className="text-purple-100 text-sm">
+                      Download your video and receive detailed performance
+                      analysis
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Section */}
+              <div className="text-center">
+                <div className="mb-6">
+                  <div className="inline-flex items-center gap-4 text-sm text-purple-100 mb-4">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4" />
+                      <span>5 Free Questions</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4" />
+                      <span>No Registration Required</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4" />
+                      <span>Instant Results</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button
+                    size="lg"
+                    className="bg-white text-purple-600 hover:bg-purple-50 font-semibold px-8 py-4 text-lg shadow-lg"
+                    asChild
+                  >
+                    <Link href="/interview-simple">
+                      <Play className="h-5 w-5 mr-2" />
+                      Start Free Interview Practice
+                    </Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2 border-white text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold"
+                    asChild
+                  >
+                    <Link href="/interview-practice">
+                      <Video className="h-5 w-5 mr-2" />
+                      View All Languages
+                    </Link>
+                  </Button>
+                </div>
+
+                <p className="text-purple-100 text-sm mt-4">
+                  ⭐ Join 10,000+ students who improved their interview
+                  confidence
+                </p>
               </div>
             </div>
           </div>

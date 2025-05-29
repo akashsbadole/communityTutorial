@@ -313,10 +313,10 @@ export default function TutorialPage() {
               {currentSection?.tryItYourself && (
                 <Card className="mb-8 border-green-200 bg-green-50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg text-green-800">
+                    {/* <CardTitle className="flex items-center gap-2 text-lg text-green-800">
                       <Play className="h-5 w-5" />
                       Try It Yourself
-                    </CardTitle>
+                    </CardTitle> */}
                   </CardHeader>
                   <CardContent>
                     <div className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4">

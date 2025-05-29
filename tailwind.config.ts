@@ -74,8 +74,8 @@ const config: Config = {
           sm: "640px",
           md: "768px",
           lg: "1024px",
-          xl: "1100px", // Set max-width to 1100px for xl screens and above
-          "2xl": "1100px",
+          xl: "1200px", // Set max-width to 1100px for xl screens and above
+          "2xl": "1200px",
         },
       },
       keyframes: {

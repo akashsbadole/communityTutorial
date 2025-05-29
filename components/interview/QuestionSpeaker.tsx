@@ -1,37 +1,33 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { useInterviewStore } from '@/lib/stores/interview-store';
-import { Play, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useRef, useState } from "react";
+import { useInterviewStore } from "@/lib/stores/interview-store";
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Square } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function QuestionSpeaker() {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [isSupported, setIsSupported] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
-  
-  const {
-    currentQuestion,
-    questions,
-    ttsPlaying,
-    setTtsPlaying,
-    isRecording
-  } = useInterviewStore();
+  const [selectedVoice, setSelectedVoice] =
+    useState<SpeechSynthesisVoice | null>(null);
+
+  const { currentQuestion, questions, ttsPlaying, setTtsPlaying, isRecording } =
+    useInterviewStore();
 
   const currentQuestionData = questions[currentQuestion];
 
   useEffect(() => {
     // Check if speech synthesis is supported
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       setIsSupported(true);
       loadVoices();
-      
+
       // Listen for voices changed event
-      speechSynthesis.addEventListener('voiceschanged', loadVoices);
-      
+      speechSynthesis.addEventListener("voiceschanged", loadVoices);
+
       return () => {
-        speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+        speechSynthesis.removeEventListener("voiceschanged", loadVoices);
       };
     }
   }, []);
@@ -48,48 +44,90 @@ export function QuestionSpeaker() {
   const loadVoices = () => {
     const availableVoices = speechSynthesis.getVoices();
     setVoices(availableVoices);
-    
+
     // Select a good default voice (prefer English voices)
-    const englishVoices = availableVoices.filter(voice => 
-      voice.lang.startsWith('en') && !voice.name.includes('Google')
+    const englishVoices = availableVoices.filter(
+      (voice) => voice.lang.startsWith("en") && !voice.name.includes("Google")
     );
-    
-    const preferredVoice = englishVoices.find(voice => 
-      voice.name.includes('Female') || voice.name.includes('Samantha') || voice.name.includes('Alex')
-    ) || englishVoices[0] || availableVoices[0];
-    
+
+    const preferredVoice =
+      englishVoices.find(
+        (voice) =>
+          voice.name.includes("Female") ||
+          voice.name.includes("Samantha") ||
+          voice.name.includes("Alex")
+      ) ||
+      englishVoices[0] ||
+      availableVoices[0];
+
     setSelectedVoice(preferredVoice);
   };
 
   const speakQuestion = () => {
-    if (!isSupported || !selectedVoice || !currentQuestionData) return;
+    if (!isSupported || !selectedVoice || !currentQuestionData) {
+      console.warn("Speech synthesis not available:", {
+        isSupported,
+        selectedVoice,
+        currentQuestionData,
+      });
+      return;
+    }
 
     // Stop any current speech
     speechSynthesis.cancel();
 
-    // Create new utterance
-    const utterance = new SpeechSynthesisUtterance(currentQuestionData.text);
-    utterance.voice = selectedVoice;
-    utterance.rate = 0.9; // Slightly slower for clarity
-    utterance.pitch = 1;
-    utterance.volume = 0.8;
+    // Wait a moment for cancel to complete
+    setTimeout(() => {
+      // Create new utterance
+      const utterance = new SpeechSynthesisUtterance(currentQuestionData.text);
+      utterance.voice = selectedVoice;
+      utterance.rate = 0.9; // Slightly slower for clarity
+      utterance.pitch = 1;
+      utterance.volume = 0.8;
 
-    // Set up event listeners
-    utterance.onstart = () => {
-      setTtsPlaying(true);
-    };
+      // Set up event listeners
+      utterance.onstart = () => {
+        console.log("🎤 AI Interviewer started speaking");
+        setTtsPlaying(true);
+      };
 
-    utterance.onend = () => {
-      setTtsPlaying(false);
-    };
+      utterance.onend = () => {
+        console.log("🎤 AI Interviewer finished speaking");
+        setTtsPlaying(false);
+      };
 
-    utterance.onerror = (event) => {
-      console.error('Speech synthesis error:', event);
-      setTtsPlaying(false);
-    };
+      utterance.onerror = (event) => {
+        console.error("🚨 Speech synthesis error:", event);
+        setTtsPlaying(false);
 
-    utteranceRef.current = utterance;
-    speechSynthesis.speak(utterance);
+        // Try to restart speech synthesis if it fails
+        setTimeout(() => {
+          if (
+            speechSynthesis.speaking === false &&
+            speechSynthesis.pending === false
+          ) {
+            console.log("🔄 Retrying speech synthesis...");
+            speechSynthesis.speak(utterance);
+          }
+        }, 1000);
+      };
+
+      utterance.onpause = () => {
+        console.log("⏸️ Speech paused");
+      };
+
+      utterance.onresume = () => {
+        console.log("▶️ Speech resumed");
+      };
+
+      utteranceRef.current = utterance;
+      speechSynthesis.speak(utterance);
+
+      console.log(
+        "🎤 AI Interviewer speaking:",
+        currentQuestionData.text.substring(0, 50) + "..."
+      );
+    }, 100);
   };
 
   const pauseResumeSpeech = () => {
@@ -98,8 +136,10 @@ export function QuestionSpeaker() {
     if (ttsPlaying) {
       if (speechSynthesis.paused) {
         speechSynthesis.resume();
+        console.log("🔊 Speech resumed");
       } else {
         speechSynthesis.pause();
+        console.log("⏸️ Speech paused");
       }
     } else {
       speakQuestion();
@@ -108,9 +148,15 @@ export function QuestionSpeaker() {
 
   const stopSpeech = () => {
     if (!isSupported) return;
-    
+
+    console.log("🛑 Stopping AI Interviewer speech");
     speechSynthesis.cancel();
     setTtsPlaying(false);
+
+    // Clear the utterance reference
+    if (utteranceRef.current) {
+      utteranceRef.current = null;
+    }
   };
 
   const repeatQuestion = () => {
@@ -128,7 +174,8 @@ export function QuestionSpeaker() {
           <span className="font-medium">Text-to-Speech Not Available</span>
         </div>
         <p className="text-sm text-yellow-700 mt-1">
-          Your browser doesn't support text-to-speech. Please read the question below.
+          Your browser doesn't support text-to-speech. Please read the question
+          below.
         </p>
       </div>
     );
@@ -151,7 +198,7 @@ export function QuestionSpeaker() {
             {currentQuestionData?.timeLimit}s limit
           </div>
         </div>
-        
+
         <h2 className="text-xl font-semibold text-gray-900 leading-relaxed">
           {currentQuestionData?.text}
         </h2>
@@ -168,8 +215,14 @@ export function QuestionSpeaker() {
             {ttsPlaying && (
               <div className="flex items-center gap-1">
                 <div className="w-1 h-4 bg-blue-500 animate-pulse"></div>
-                <div className="w-1 h-3 bg-blue-500 animate-pulse" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-1 h-5 bg-blue-500 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                <div
+                  className="w-1 h-3 bg-blue-500 animate-pulse"
+                  style={{ animationDelay: "0.1s" }}
+                ></div>
+                <div
+                  className="w-1 h-5 bg-blue-500 animate-pulse"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
                 <span className="text-xs text-blue-600 ml-2">Speaking...</span>
               </div>
             )}
@@ -191,10 +244,23 @@ export function QuestionSpeaker() {
               ) : (
                 <>
                   <Play className="h-4 w-4" />
-                  {ttsPlaying ? 'Resume' : 'Play'}
+                  {ttsPlaying ? "Resume" : "Play"}
                 </>
               )}
             </Button>
+
+            {ttsPlaying && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={stopSpeech}
+                disabled={isRecording}
+                className="flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50"
+              >
+                <Square className="h-4 w-4" />
+                Stop
+              </Button>
+            )}
 
             <Button
               variant="outline"
@@ -209,12 +275,32 @@ export function QuestionSpeaker() {
           </div>
         </div>
 
+        {/* Voice Status */}
+        <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+          <div className="flex items-center gap-2">
+            <span>Voice:</span>
+            <span className="font-medium">
+              {selectedVoice ? selectedVoice.name : "Loading..."}
+            </span>
+            {selectedVoice && (
+              <span className="px-2 py-1 bg-green-100 text-green-700 rounded">
+                Ready
+              </span>
+            )}
+          </div>
+          <div className="text-right">
+            <span>{voices.length} voices available</span>
+          </div>
+        </div>
+
         {/* Instructions */}
-        <div className="mt-3 text-xs text-gray-600">
+        <div className="mt-2 text-xs text-gray-600">
           <p>
-            💡 The AI interviewer will read the question aloud. 
-            {!isRecording && " Click the record button when you're ready to answer."}
-            {isRecording && " You're being recorded - speak naturally and look at the camera."}
+            💡 The AI interviewer will read the question aloud.
+            {!isRecording &&
+              " Click the record button when you're ready to answer."}
+            {isRecording &&
+              " You're being recorded - speak naturally and look at the camera."}
           </p>
         </div>
       </div>
@@ -235,15 +321,15 @@ export function QuestionSpeaker() {
       {/* Voice Selection (Hidden but functional) */}
       {voices.length > 0 && (
         <select
-          value={selectedVoice?.name || ''}
+          value={selectedVoice?.name || ""}
           onChange={(e) => {
-            const voice = voices.find(v => v.name === e.target.value);
+            const voice = voices.find((v) => v.name === e.target.value);
             setSelectedVoice(voice || null);
           }}
           className="hidden" // Hidden for simplicity, but functional
         >
           {voices
-            .filter(voice => voice.lang.startsWith('en'))
+            .filter((voice) => voice.lang.startsWith("en"))
             .map((voice) => (
               <option key={voice.name} value={voice.name}>
                 {voice.name} ({voice.lang})

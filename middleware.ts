@@ -21,7 +21,6 @@ const isProtectedApiRoute = createRouteMatcher([
   "/api/admin(.*)",
   "/api/chat(.*)",
   "/api/assignments(.*)",
-  "/api/sessions(.*)",
   "/api/messages(.*)",
   "/api/support(.*)",
 ]);

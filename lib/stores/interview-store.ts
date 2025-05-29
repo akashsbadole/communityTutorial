@@ -37,6 +37,23 @@ export interface InterviewState {
     lookingAtCamera: boolean;
     goodPosture: boolean;
     speaking: boolean;
+    // Advanced analysis fields
+    speechClarity?: number;
+    voiceConfidence?: number;
+    advancedConfidence?: number;
+    attentionScore?: number;
+    headPose?: { pitch: number; yaw: number; roll: number };
+    emotionScores?: {
+      happy: number;
+      sad: number;
+      angry: number;
+      fearful: number;
+      disgusted: number;
+      surprised: number;
+      neutral: number;
+    };
+    eyeGazeDirection?: { x: number; y: number };
+    blinkRate?: number;
   };
 
   // Questions
