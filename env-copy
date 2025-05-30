@@ -1,0 +1,45 @@
+# Email Configuration
+RESEND_API_KEY=re_4hGZdA8M_HNUc87tecwNLgfbjcVhWBvGf
+RESEND_FROM_EMAIL=info@seoauditcheck.com
+ADMIN_EMAIL=skywebsitedev@gmail.com
+
+# Database Configuration
+# Current Nile database (not working)
+# DATABASE_URL=postgres://0197087b-e577-7260-97ed-6c465e93c449:52f80b5f-419a-4b8b-bc56-68fff9cb1a00@us-west-2.db.thenile.dev/trainingsite
+
+# Option 1: Neon Database (Recommended)
+# Sign up at https://neon.tech and replace with your connection string
+# DATABASE_URL=postgresql://username:password@ep-xxx-xxx.us-east-1.aws.neon.tech/neondb?sslmode=require
+
+# Option 2: Supabase Database
+# Sign up at https://supabase.com and replace with your connection string
+# DATABASE_URL=postgresql://postgres:password@db.xxx.supabase.co:5432/postgres
+
+# Option 3: Local PostgreSQL (for development)
+# DATABASE_URL=postgresql://username:password@localhost:5432/training_site
+
+# Temporary: Use local SQLite for development (comment out when using PostgreSQL)
+# DATABASE_URL=file:./data/database.sqlite
+
+# Clerk Authentication
+# Get these from https://dashboard.clerk.com
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_YnVzeS1wb3Jwb2lzZS05MS5jbGVyay5hY2NvdW50cy5kZXYk
+CLERK_SECRET_KEY=sk_test_ls8hj4gbS0ppyhFEnb3eoTTEY68WVmme22IVAyq30a
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+
+
+DATABASE_URL=postgresql://neondb_owner:npg_GajtLmXR9SA0@ep-dark-violet-a1o07brl-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+
+
+MAILCHIMP_API_KEY=
+MAILCHIMP_AUDIENCE_ID=
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=
+RAZORPAY_KEY_ID=
+
+NEXT_GEMINI_API_KEY=AIzaSyDiQbKy7Dzvv7FMC7kNZcmuyShFbVk3SUs
