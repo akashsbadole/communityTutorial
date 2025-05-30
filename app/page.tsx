@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Card,
@@ -15,7 +17,7 @@ import {
   Clock,
   Users,
   MessageCircle,
-  Linkedin,
+  Users as LinkedinIcon,
   Search,
   HeadphonesIcon,
   CheckCircle,
@@ -34,6 +36,8 @@ import {
 } from "lucide-react";
 import { getAllCourses } from "@/lib/db";
 import { StickyEnrollmentForm } from "@/components/sticky-enrollment-form";
+import { useYouTubePopup } from "@/components/youtube-video-popup";
+import { useEffect, useState } from "react";
 
 const getIconForCourse = (slug: string) => {
   switch (slug) {
@@ -48,8 +52,30 @@ const getIconForCourse = (slug: string) => {
   }
 };
 
-export default async function HomePage() {
-  const courses = await getAllCourses();
+export default function HomePage() {
+  const [courses, setCourses] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // YouTube video popup hook - replace "dQw4w9WgXcQ" with your actual demo video ID
+  // Example: if your YouTube URL is https://www.youtube.com/watch?v=ABC123XYZ
+  // then use "ABC123XYZ" as the video ID
+  const { openVideo, VideoPopup } = useYouTubePopup("dQw4w9WgXcQ");
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const coursesData = await getAllCourses();
+        setCourses(coursesData);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        setCourses([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-16">
@@ -121,14 +147,18 @@ export default async function HomePage() {
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg"
+                  asChild
                 >
-                  <Rocket className="h-5 w-5 mr-2" />
-                  Start Learning Today
+                  <Link href="/search">
+                    <Rocket className="h-5 w-5 mr-2" />
+                    Start Learning Today
+                  </Link>
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
                   className="border-2 border-gray-300 hover:border-blue-600 px-8 py-4 text-lg font-semibold"
+                  onClick={openVideo}
                 >
                   <Play className="h-5 w-5 mr-2" />
                   Watch Demo
@@ -327,7 +357,7 @@ export default async function HomePage() {
                     asChild
                   >
                     <Link href="/interview-practice">
-                      <Video className="h-5 w-5 mr-2" />
+                      <Video className="h-5 w-5 mr-2 text-white" />
                       View All Languages
                     </Link>
                   </Button>
@@ -343,53 +373,77 @@ export default async function HomePage() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {courses.map((course: any) => {
-            const IconComponent = getIconForCourse(course.slug);
-            return (
-              <Card
-                key={course.slug}
-                className="hover:shadow-lg transition-shadow duration-300 bg-white"
-              >
-                <CardHeader>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <IconComponent className="h-6 w-6 text-blue-600" />
+          {isLoading
+            ? // Loading skeleton
+              Array.from({ length: 3 }).map((_, index) => (
+                <Card key={index} className="bg-white">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 bg-gray-200 rounded-lg animate-pulse">
+                        <div className="h-6 w-6 bg-gray-300 rounded"></div>
+                      </div>
+                      <div className="h-6 bg-gray-200 rounded animate-pulse flex-1"></div>
                     </div>
-                    <CardTitle className="text-xl">{course.name}</CardTitle>
-                  </div>
-                  <CardDescription className="text-gray-600">
-                    {course.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Duration:</span>
-                      <span className="font-medium">{course.duration}</span>
+                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 mb-4">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Level:</span>
-                      <span className="font-medium">{course.level}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Price:</span>
-                      <Badge
-                        variant="secondary"
-                        className="font-bold text-green-700"
-                      >
-                        {course.price}
-                      </Badge>
-                    </div>
-                  </div>
-                  <Button asChild className="w-full">
-                    <Link href={`/course/${course.slug}`}>
-                      View Course Details
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
+                    <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                  </CardContent>
+                </Card>
+              ))
+            : courses.map((course: any) => {
+                const IconComponent = getIconForCourse(course.slug);
+                return (
+                  <Card
+                    key={course.slug}
+                    className="hover:shadow-lg transition-shadow duration-300 bg-white"
+                  >
+                    <CardHeader>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          <IconComponent className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <CardTitle className="text-xl">{course.name}</CardTitle>
+                      </div>
+                      <CardDescription className="text-gray-600">
+                        {course.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 mb-4">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-500">Duration:</span>
+                          <span className="font-medium">{course.duration}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-500">Level:</span>
+                          <span className="font-medium">{course.level}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-500">Price:</span>
+                          <Badge
+                            variant="secondary"
+                            className="font-bold text-green-700"
+                          >
+                            {course.price}
+                          </Badge>
+                        </div>
+                      </div>
+                      <Button asChild className="w-full">
+                        <Link href={`/course/${course.slug}`}>
+                          View Course Details
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
         </div>
 
         {/* 24/7 Tutor Support Section */}
@@ -543,7 +597,7 @@ export default async function HomePage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mb-4">
-                  <Linkedin className="h-6 w-6 text-blue-600" />
+                  <LinkedinIcon className="h-6 w-6 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2 text-gray-900">
                   LinkedIn Optimization
@@ -753,6 +807,9 @@ export default async function HomePage() {
 
       {/* Sticky Enrollment Form */}
       <StickyEnrollmentForm courses={courses} />
+
+      {/* YouTube Video Popup */}
+      <VideoPopup title="TrainingHub Platform Demo" autoplay={true} />
     </div>
   );
 }

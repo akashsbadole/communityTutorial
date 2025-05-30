@@ -73,7 +73,7 @@ export function AuthHeader() {
                     </Button>
                   </SignInButton>
                   <Button asChild size="sm">
-                    <Link href="/sign-up">Get Started</Link>
+                    <Link href="/sign-up">Sign Up</Link>
                   </Button>
                 </SignedOut>
                 <SignedIn>

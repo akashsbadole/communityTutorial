@@ -25,6 +25,7 @@ import {
   Heart,
   ExternalLink,
   Video,
+  FileUser,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -65,12 +66,12 @@ const footerSections = [
     ],
   },
   {
-    title: "Support",
+    title: "Tools",
     links: [
+      { name: "Resume Builder", href: "/resume", icon: FileUser },
       { name: "Help Center", href: "/help", icon: HelpCircle },
       { name: "Contact Us", href: "/contact", icon: Mail },
       { name: "FAQ", href: "/faq", icon: HelpCircle },
-      { name: "Site Menu", href: "/menu", icon: Menu },
     ],
   },
   {

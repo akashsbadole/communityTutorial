@@ -484,3 +484,19 @@ export const systemSettings = pgTable("system_settings", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Resumes table
+export const resumes = pgTable("resumes", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  data: text("data").notNull(), // JSON string containing all resume data
+  templateId: text("template_id").default("modern"),
+  isPublic: boolean("is_public").default(false),
+  shareToken: text("share_token").unique(), // for public sharing
+  downloadCount: integer("download_count").default(0),
+  lastExportedAt: timestamp("last_exported_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
