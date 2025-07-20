@@ -1,7 +1,5 @@
 import { drizzle } from "drizzle-orm/neon-http";
-import { drizzle as drizzleSQLite } from "drizzle-orm/better-sqlite3";
 import { neon } from "@neondatabase/serverless";
-import Database from "better-sqlite3";
 import {
   courses,
   enrollments,
@@ -47,18 +45,6 @@ try {
     // PostgreSQL connection
     sql = neon(databaseUrl);
     db = drizzle(sql);
-  } else if (isSQLite) {
-    // SQLite connection
-    const dbPath = databaseUrl.replace("file:", "");
-    const dbDir = path.dirname(dbPath);
-
-    // Ensure directory exists
-    if (!fs.existsSync(dbDir)) {
-      fs.mkdirSync(dbDir, { recursive: true });
-    }
-
-    const sqlite = new Database(dbPath);
-    db = drizzleSQLite(sqlite);
   } else {
     throw new Error("Unsupported database URL format");
   }

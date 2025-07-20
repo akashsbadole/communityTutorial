@@ -1,60 +1,51 @@
-import { drizzle } from "drizzle-orm/neon-http"
-import { drizzle as drizzleSQLite } from "drizzle-orm/better-sqlite3"
-import { neon } from "@neondatabase/serverless"
-import Database from "better-sqlite3"
-import { courses } from "../lib/schema"
-import * as dotenv from "dotenv"
-import fs from "fs"
-import path from "path"
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { courses } from "../lib/schema";
+import * as dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
 
 // Load environment variables
-dotenv.config()
+dotenv.config();
 
 async function seedDatabase() {
   try {
-    console.log("🌱 Starting database seeding...")
+    console.log("🌱 Starting database seeding...");
 
     if (!process.env.DATABASE_URL) {
-      throw new Error("DATABASE_URL environment variable is not set")
+      throw new Error("DATABASE_URL environment variable is not set");
     }
 
-    const databaseUrl = process.env.DATABASE_URL
-    const isPostgreSQL = databaseUrl.startsWith('postgres://') || databaseUrl.startsWith('postgresql://')
-    const isSQLite = databaseUrl.startsWith('file:') || databaseUrl.includes('.sqlite')
+    const databaseUrl = process.env.DATABASE_URL;
+    const isPostgreSQL =
+      databaseUrl.startsWith("postgres://") ||
+      databaseUrl.startsWith("postgresql://");
+    const isSQLite =
+      databaseUrl.startsWith("file:") || databaseUrl.includes(".sqlite");
 
-    console.log(`📡 Connecting to ${isPostgreSQL ? 'PostgreSQL' : 'SQLite'} database...`)
+    console.log(
+      `📡 Connecting to ${isPostgreSQL ? "PostgreSQL" : "SQLite"} database...`
+    );
 
-    let db: any
+    let db: any;
 
     if (isPostgreSQL) {
       // PostgreSQL connection
-      const sql = neon(databaseUrl)
-      db = drizzle(sql)
-    } else if (isSQLite) {
-      // SQLite connection
-      const dbPath = databaseUrl.replace('file:', '')
-      const dbDir = path.dirname(dbPath)
-
-      // Ensure directory exists
-      if (!fs.existsSync(dbDir)) {
-        fs.mkdirSync(dbDir, { recursive: true })
-      }
-
-      const sqlite = new Database(dbPath)
-      db = drizzleSQLite(sqlite)
+      const sql = neon(databaseUrl);
+      db = drizzle(sql);
     } else {
-      throw new Error("Unsupported database URL format")
+      throw new Error("Unsupported database URL format");
     }
 
-    console.log("🔍 Checking for existing courses...")
-    const existingCourses = await db.select().from(courses).limit(1)
+    console.log("🔍 Checking for existing courses...");
+    const existingCourses = await db.select().from(courses).limit(1);
 
     if (existingCourses.length > 0) {
-      console.log("📚 Courses already exist, skipping seed...")
-      return
+      console.log("📚 Courses already exist, skipping seed...");
+      return;
     }
 
-    console.log("📝 Inserting course data...")
+    console.log("📝 Inserting course data...");
     await db.insert(courses).values([
       {
         name: "WordPress Course",
@@ -98,7 +89,8 @@ async function seedDatabase() {
         }),
         tutorEmail: "wp-tutor@trainingsite.com",
         price: "$299",
-        description: "Master WordPress development from basics to advanced themes and plugins",
+        description:
+          "Master WordPress development from basics to advanced themes and plugins",
         duration: "8 weeks",
         level: "Beginner to Advanced",
       },
@@ -129,7 +121,8 @@ async function seedDatabase() {
         }),
         tutorEmail: "shopify-tutor@trainingsite.com",
         price: "$249",
-        description: "Build and customize Shopify stores with Liquid templates and apps",
+        description:
+          "Build and customize Shopify stores with Liquid templates and apps",
         duration: "6 weeks",
         level: "Intermediate",
       },
@@ -160,19 +153,19 @@ async function seedDatabase() {
         }),
         tutorEmail: "webdev-tutor@trainingsite.com",
         price: "$399",
-        description: "Complete web development bootcamp covering HTML, CSS, JavaScript and modern frameworks",
+        description:
+          "Complete web development bootcamp covering HTML, CSS, JavaScript and modern frameworks",
         duration: "12 weeks",
         level: "Beginner to Advanced",
       },
-    ])
+    ]);
 
-    console.log("✅ Database seeded successfully!")
-    console.log("📊 Inserted 3 courses")
-
+    console.log("✅ Database seeded successfully!");
+    console.log("📊 Inserted 3 courses");
   } catch (error) {
-    console.error("❌ Seeding failed:", error)
-    process.exit(1)
+    console.error("❌ Seeding failed:", error);
+    process.exit(1);
   }
 }
 
-seedDatabase()
+seedDatabase();

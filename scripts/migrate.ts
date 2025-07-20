@@ -1,9 +1,6 @@
 import { drizzle } from "drizzle-orm/neon-http";
-import { drizzle as drizzleSQLite } from "drizzle-orm/better-sqlite3";
 import { neon } from "@neondatabase/serverless";
-import Database from "better-sqlite3";
 import { migrate } from "drizzle-orm/neon-http/migrator";
-import { migrate as migrateSQLite } from "drizzle-orm/better-sqlite3/migrator";
 import { courses, enrollments } from "../lib/schema";
 import * as dotenv from "dotenv";
 import fs from "fs";
@@ -40,20 +37,6 @@ async function runMigration() {
       db = drizzle(sql);
       console.log("🚀 Running PostgreSQL migrations...");
       await migrate(db, { migrationsFolder: "./drizzle" });
-    } else if (isSQLite) {
-      // SQLite migration
-      const dbPath = databaseUrl.replace("file:", "");
-      const dbDir = path.dirname(dbPath);
-
-      // Ensure directory exists
-      if (!fs.existsSync(dbDir)) {
-        fs.mkdirSync(dbDir, { recursive: true });
-      }
-
-      const sqlite = new Database(dbPath);
-      db = drizzleSQLite(sqlite);
-      console.log("🚀 Running SQLite migrations...");
-      migrateSQLite(db, { migrationsFolder: "./drizzle" });
     } else {
       throw new Error("Unsupported database URL format");
     }
@@ -84,19 +67,6 @@ async function runMigration() {
           "⚠️  Some tables might be missing. Please check the migration."
         );
         console.log(`Expected 3 tables, found ${result.length}`);
-      }
-    } else {
-      // For SQLite, just try to query the tables
-      try {
-        await db.select().from(courses).limit(1);
-        await db.select().from(enrollments).limit(1);
-        console.log(
-          "🎉 Database setup complete! All tables created successfully."
-        );
-      } catch (error) {
-        console.log(
-          "⚠️  Some tables might be missing. Please check the migration."
-        );
       }
     }
   } catch (error) {
