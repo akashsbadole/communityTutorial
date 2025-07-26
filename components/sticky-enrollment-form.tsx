@@ -96,17 +96,15 @@ export function StickyEnrollmentForm({ courses }: StickyEnrollmentFormProps) {
   );
 
   return (
-    <div className="fixed right-[-30px] top-1/2 transform -translate-y-1/2 z-50">
+    <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50 w-[90vw] sm:w-80 max-w-xs">
       <Card
-        className={`w-80 transition-all duration-300 shadow-lg ${
-          isOpen ? "translate-x-0" : "translate-x-72"
+        className={`transition-transform duration-300 shadow-lg ${
+          isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Toggle Button */}
         <div
-          className={`absolute left-0 top-1/2 transform -translate-y-1/2 ${
-            isOpen ? "-translate-x-12" : "-translate-x-12"
-          } cursor-pointer`}
+          className="absolute -left-12 top-1/2 transform -translate-y-1/2 cursor-pointer z-50"
           onClick={() => setIsOpen(!isOpen)}
         >
           <div className="bg-blue-600 text-white p-3 rounded-l-lg shadow-lg hover:bg-blue-700 transition-colors">
@@ -121,6 +119,7 @@ export function StickyEnrollmentForm({ courses }: StickyEnrollmentFormProps) {
           </div>
         </div>
 
+        {/* Form Content */}
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div>
