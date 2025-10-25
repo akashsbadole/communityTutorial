@@ -1,3 +1,8 @@
+## Screenshot
+
+![screenshot](Online-Training-Site-Master-WordPress-Shopify-Web-Development.png "screenshot")
+
+<pre>
 ## Now let's try to generate the migration:
 
 npx drizzle-kit generate
@@ -369,4 +374,4 @@ Your platform now has the most comprehensive programming tutorial system with:
 ✅ All 10 major programming languages
 ✅ Progressive learning from beginner to advanced
 ✅ Interactive code examples and exercises
-This creates a world-class learning platform that rivals and exceeds W3Schools in scope and depth! 🚀
+This creates a world-class learning platform that rivals and exceeds W3Schools in scope and depth! 🚀 </pre>
